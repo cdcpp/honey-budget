@@ -50,3 +50,37 @@ erDiagram
         decimal item_price
     }
 ```
+
+erDiagram
+    "자산" ||--o{ "거래내역" : "결제수단으로 사용됨"
+    "카테고리" ||--o{ "거래내역" : "수입/지출로 분류됨"
+    "거래내역" ||--o{ "거래상세" : "개별 품목을 포함함"
+
+    "자산" {
+        int 자산ID PK
+        string 자산명 "예: 비상금1, 주식"
+        string 자산유형 "예: 현금, 예적금"
+        decimal 잔액
+        string 메모
+    }
+    "카테고리" {
+        int 카테고리ID PK
+        string 수지구분 "수입/지출/이체"
+        string 대분류 "예: 식비, 고정지출"
+        string 소분류 "예: 마트, 보험료"
+    }
+    "거래내역" {
+        int 거래ID PK
+        date 거래일자
+        int 자산ID FK "돈이 나간/들어온 곳"
+        int 카테고리ID FK "지출/수입 성격"
+        string 사용처 "예: 쿠팡, 주유소"
+        decimal 총금액 "영수증 총액"
+        string 메모
+    }
+    "거래상세" {
+        int 상세ID PK
+        int 거래ID FK
+        string 품목명 "예: 앞다리살, 블루베리"
+        decimal 품목금액 "개별 가격"
+    }
