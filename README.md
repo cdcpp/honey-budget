@@ -15,46 +15,51 @@
 
 
 ## 🧩 Database Modeling 
+2026년 9월 13일 20시 45분 33초 기준으로 깃허브(GitHub)가 지원하는 내장 Mermaid 렌더링 엔진의 엄격한 문법 스펙을 확인해 본 결과, 엔티티(테이블) 이름에 한글, 특수문자(/, ()), 띄어쓰기가 포함되어 파싱 에러가 발생한 것입니다.
+
+깃허브 환경에서 에러 없이 깔끔하게 렌더링되도록, 엔티티명은 영문 대문자로 변경하고 한글 설명은 속성 옆에 주석 형태로 달아두는 안전한 표준 문법으로 수정했습니다.
+
+아래 코드를 그대로 복사해서 깃허브 README.md에 붙여넣으시면 정상적으로 그려집니다.
+
+Markdown
 ```mermaid
 erDiagram
-    erDiagram
-    "계좌/자산(Asset)" ||--o{ "월간 현황(AssetSnapshot)" : "매월 1회 잔액 기록 (현황판)"
-    "계좌/자산(Asset)" ||--o{ "지출 내역(Transaction)" : "돈이 빠져나가는 출처"
-    "카테고리(Category)" ||--o{ "지출 내역(Transaction)" : "지출 성격"
+    ASSET ||--o{ ASSET_SNAPSHOT : "매월 1회 잔액 기록"
+    ASSET ||--o{ TRANSACTION : "출금 통장"
+    CATEGORY ||--o{ TRANSACTION : "지출 분류"
 
-    "계좌/자산(Asset)" {
-        int 자산ID PK
-        string 통장명 "예: 생활비통장, 고정비통장, 자동차통장, 적금, 주식"
-        string 역할 "예: 지출용, 저축용, 투자용"
+    ASSET {
+        int asset_id PK
+        string name "통장명 (생활비, 고정비, 자동차, 주식 등)"
+        string role "역할"
     }
     
-    "월간 현황(AssetSnapshot)" {
-        int 현황ID PK
-        int 자산ID FK
-        YearMonth 기준월 "예: 2026-09"
-        decimal 현재잔액 "해당 월의 현황판 업데이트 금액"
+    ASSET_SNAPSHOT {
+        int snapshot_id PK
+        int asset_id FK
+        string record_month "기준월 (예: 2026-09)"
+        decimal balance "현황판 업데이트 시점의 현재 잔액"
     }
 
-    "월간 예산/수입(MonthlyBudget)" {
-        int 예산ID PK
-        YearMonth 기준월 "예: 2026-09"
-        decimal 총수입 "해당 월 급여"
-        decimal 생활비할당 "910,000"
-        decimal 고정비할당 "1,100,000"
+    MONTHLY_BUDGET {
+        int budget_id PK
+        string record_month "기준월"
+        decimal total_income "월 총수입"
+        decimal living_expense "생활비 할당 (91만원)"
+        decimal fixed_expense "고정비 할당 (110만원)"
     }
 
-    "카테고리(Category)" {
-        int 카테고리ID PK
-        string 지출분류 "식비, 비고정지출, 고정비용, 자동차/병원비"
+    CATEGORY {
+        int category_id PK
+        string type "분류명 (식비, 고정비용, 비고정지출, 자동차/병원비)"
     }
 
-    "지출 내역(Transaction)" {
-        int 내역ID PK
-        date 결제일자
-        int 출금자산ID FK "어느 통장에서 나갔는가? (예: 생활비통장)"
-        int 카테고리ID FK "어디에 썼는가? (예: 식비)"
-        string 사용처 "예: 쿠팡, 주유소"
-        decimal 결제금액
+    TRANSACTION {
+        int transaction_id PK
+        date pay_date "결제일자"
+        int asset_id FK "돈이 나간 통장 (출금자산ID)"
+        int category_id FK "지출 목적 (카테고리ID)"
+        string merchant "사용처 (예: 쿠팡, 주유소)"
+        decimal amount "결제금액"
     }
 ```
-
