@@ -55,4 +55,11 @@ erDiagram
         string merchant "사용처 (예: 쿠팡, 주유소)"
         decimal amount "결제금액"
     }
+
+    TRANSACTION_DETAIL {
+        int detail_id PK
+        int transaction_id FK
+        string item_name "품목명 (예: 닭안심, 블루베리)"
+        decimal amount "개별 금액"
+    }
 ```
