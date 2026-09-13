@@ -15,8 +15,7 @@
 
 
 ## 🧩 Database Modeling 
-```
-mermaid
+```mermaid
 erDiagram
     ASSET ||--o{ ASSET_SNAPSHOT : "매월 1회 잔액 기록"
     ASSET ||--o{ TRANSACTION : "출금 통장"
