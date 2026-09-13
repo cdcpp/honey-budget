@@ -38,8 +38,8 @@ erDiagram
         int budget_id PK
         string record_month "기준월"
         decimal total_income "월 총수입"
-        decimal living_expense "생활비 할당 (91만원)"
-        decimal fixed_expense "고정비 할당 (110만원)"
+        decimal living_expense "생활비 할당"
+        decimal fixed_expense "고정비 할당"
     }
 
     CATEGORY {
