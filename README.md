@@ -17,72 +17,44 @@
 ## 🧩 Database Modeling 
 ```mermaid
 erDiagram
-    ASSETS ||--o{ TRANSACTIONS : "uses"
-    CATEGORIES ||--o{ TRANSACTIONS : "classifies"
-    TRANSACTIONS ||--o{ TRANSACTION_DETAILS : "contains"
+    erDiagram
+    "계좌/자산(Asset)" ||--o{ "월간 현황(AssetSnapshot)" : "매월 1회 잔액 기록 (현황판)"
+    "계좌/자산(Asset)" ||--o{ "지출 내역(Transaction)" : "돈이 빠져나가는 출처"
+    "카테고리(Category)" ||--o{ "지출 내역(Transaction)" : "지출 성격"
 
-    ASSETS {
-        int asset_id PK
-        string asset_name
-        string asset_type
-        decimal balance
-        string memo
-    }
-    CATEGORIES {
-        int category_id PK
-        string type
-        string main_category
-        string sub_category
-    }
-    TRANSACTIONS {
-        int transaction_id PK
-        date transaction_date
-        int asset_id FK
-        int category_id FK
-        string merchant
-        decimal total_amount
-        string memo
-    }
-    TRANSACTION_DETAILS {
-        int detail_id PK
-        int transaction_id FK
-        string item_name
-        decimal item_price
-    }
-```
----------------------------------------------------------------------------------------------------------------------------------------
-```mermaid
-erDiagram
-    "자산" ||--o{ "거래내역" : "결제수단으로 사용됨"
-    "카테고리" ||--o{ "거래내역" : "수입/지출로 분류됨"
-    "거래내역" ||--o{ "거래상세" : "개별 품목을 포함함"
-
-    "자산" {
+    "계좌/자산(Asset)" {
         int 자산ID PK
-        string 자산명 "예: 비상금1, 주식"
-        string 자산유형 "예: 현금, 예적금"
-        decimal 잔액
-        string 메모
+        string 통장명 "예: 생활비통장, 고정비통장, 자동차통장, 적금, 주식"
+        string 역할 "예: 지출용, 저축용, 투자용"
     }
-    "카테고리" {
+    
+    "월간 현황(AssetSnapshot)" {
+        int 현황ID PK
+        int 자산ID FK
+        YearMonth 기준월 "예: 2026-09"
+        decimal 현재잔액 "해당 월의 현황판 업데이트 금액"
+    }
+
+    "월간 예산/수입(MonthlyBudget)" {
+        int 예산ID PK
+        YearMonth 기준월 "예: 2026-09"
+        decimal 총수입 "해당 월 급여"
+        decimal 생활비할당 "910,000"
+        decimal 고정비할당 "1,100,000"
+    }
+
+    "카테고리(Category)" {
         int 카테고리ID PK
-        string 수지구분 "수입/지출/이체"
-        string 대분류 "예: 식비, 고정지출"
-        string 소분류 "예: 마트, 보험료"
+        string 지출분류 "식비, 비고정지출, 고정비용, 자동차/병원비"
     }
-    "거래내역" {
-        int 거래ID PK
-        date 거래일자
-        int 자산ID FK "돈이 나간/들어온 곳"
-        int 카테고리ID FK "지출/수입 성격"
+
+    "지출 내역(Transaction)" {
+        int 내역ID PK
+        date 결제일자
+        int 출금자산ID FK "어느 통장에서 나갔는가? (예: 생활비통장)"
+        int 카테고리ID FK "어디에 썼는가? (예: 식비)"
         string 사용처 "예: 쿠팡, 주유소"
-        decimal 총금액 "영수증 총액"
-        string 메모
-    }
-    "거래상세" {
-        int 상세ID PK
-        int 거래ID FK
-        string 품목명 "예: 앞다리살, 블루베리"
-        decimal 품목금액 "개별 가격"
+        decimal 결제금액
     }
 ```
+
