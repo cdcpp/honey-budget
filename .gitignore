@@ -22,6 +22,8 @@ build/
 *.log
 *.ctxt
 .mtj.tmp/
+
+# Package Files #
 *.jar
 *.war
 *.nar
@@ -29,6 +31,8 @@ build/
 *.zip
 *.tar.gz
 *.rar
+
+# JVM crash logs
 hs_err_pid*
 replay_pid*
 
@@ -64,7 +68,6 @@ Thumbs.db
 desktop.ini
 
 ### --- Local Database & Logs ---
-# H2 파일 기반 DB 생성 시 파일 제외
 *.mv.db
 *.trace.db
 logs/

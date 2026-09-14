@@ -1,4 +1,4 @@
-package com.boneybudget;
+package com.honeybudget;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
