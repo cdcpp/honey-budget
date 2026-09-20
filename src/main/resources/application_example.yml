@@ -1,0 +1,72 @@
+# ==============================================================================
+# [설정 템플릿 샘플] application.yml.example
+#
+# ⚠️ [보안 주의사항]
+# - 이 파일은 Git 추적 대상(공개 저장소 포함)이므로 실제 비밀번호나 API 키를 절대 작성하지 마세요.
+# - 사용 방법:
+#   1. 이 파일을 복사하여 같은 디렉토리에 'application.yml' 파일로 생성합니다.
+#   2. 'application.yml'은 .gitignore에 등록되어 있으므로 Git에 커밋되지 않습니다.
+#   3. 실제 운영/개발 환경에 맞는 접속 정보는 환경 변수 또는 복사한 application.yml에만 기재하세요.
+# ==============================================================================
+
+spring:
+  application:
+    name: honey-budget
+
+  # ----------------------------------------------------------------------------
+  # 데이터베이스 연결 설정
+  # 환경 변수가 설정되어 있으면 해당 값을 사용하고, 없을 경우 안전한 로컬 H2 기본값을 사용합니다.
+  # ----------------------------------------------------------------------------
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:h2:mem:honeybudget;MODE=MySQL;DB_CLOSE_DELAY=-1}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER:org.h2.Driver}
+    username: ${SPRING_DATASOURCE_USERNAME:sa}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+
+  # ----------------------------------------------------------------------------
+  # H2 웹 콘솔 설정 (개발 편의 도구)
+  # 보안을 위해 로컬(localhost)에서만 접속을 허용합니다. (web-allow-others: false)
+  # ----------------------------------------------------------------------------
+  h2:
+    console:
+      enabled: ${H2_CONSOLE_ENABLED:true}
+      path: /h2-console
+      settings:
+        web-allow-others: false
+
+  # ----------------------------------------------------------------------------
+  # JPA & Hibernate 설정
+  # ----------------------------------------------------------------------------
+  jpa:
+    open-in-view: false
+    hibernate:
+      # 로컬 개발 시: create-drop 또는 update 권장
+      # 운영(Production) 배포 시: validate 또는 none 필수 적용
+      ddl-auto: ${JPA_DDL_AUTO:create-drop}
+    show-sql: ${JPA_SHOW_SQL:true}
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+
+# ------------------------------------------------------------------------------
+# 애플리케이션 로깅 설정
+# ------------------------------------------------------------------------------
+logging:
+  level:
+    root: INFO
+    com.honeybudget: DEBUG
+    # SQL 바인딩 파라미터 확인 필요 시 활성화:
+    # org.hibernate.orm.jdbc.bind: TRACE
+
+# ==============================================================================
+# [참고] 운영(Production) MySQL 데이터베이스 연동 예시:
+# 서버 배포 시 아래 환경 변수를 주입하거나 별도 설정 파일에 분리하여 사용하세요.
+#
+# SPRING_DATASOURCE_URL=jdbc:mysql://${DB_HOST:localhost}:3306/${DB_NAME:honey_budget}?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+# SPRING_DATASOURCE_DRIVER=com.mysql.cj.jdbc.Driver
+# SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+# SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+# JPA_DDL_AUTO=validate
+# H2_CONSOLE_ENABLED=false
+# ==============================================================================

@@ -5,6 +5,8 @@ application-*.properties
 application-*.yml
 !application-test.yml
 !application-test.properties
+!application.yml.example
+!application-sample.yml
 
 # 환경 변수 및 로컬 프로파일 설정
 .env
