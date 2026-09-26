@@ -1,6 +1,7 @@
 package com.honeybudget.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,14 +12,19 @@ import lombok.NoArgsConstructor;
  *
  * @param <T> 응답 본문 데이터 타입
  */
+@Schema(description = "공통 API 응답 규격")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApiResponse<T> {
 
+    @Schema(description = "요청 처리 성공 여부", example = "true")
     private boolean success;
+
+    @Schema(description = "응답 안내 또는 결과 메시지", example = "요청이 성공적으로 처리되었습니다.")
     private String message;
 
+    @Schema(description = "응답 본문 데이터")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
 

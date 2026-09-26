@@ -57,7 +57,17 @@ logging:
     root: INFO
     com.honeybudget: DEBUG
     # SQL 바인딩 파라미터 확인 필요 시 활성화:
-    # org.hibernate.orm.jdbc.bind: TRACE
+# ------------------------------------------------------------------------------
+# Swagger / OpenAPI 설정
+# ------------------------------------------------------------------------------
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    display-request-duration: true
 
 # ==============================================================================
 # [참고] 운영(Production) MySQL 데이터베이스 연동 예시:
