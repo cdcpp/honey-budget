@@ -30,12 +30,9 @@ class OpenApiDocumentationTest {
                 .andExpect(jsonPath("$.openapi").exists())
                 .andExpect(jsonPath("$.info.title").value("HoneyBudget API"))
                 .andExpect(jsonPath("$.info.version").value("v1.0.0"))
-                .andExpect(jsonPath("$.paths['/api/v1/assets']").exists())
-                .andExpect(jsonPath("$.paths['/api/v1/assets'].post.summary").value("신규 자산 등록"))
-                .andExpect(jsonPath("$.paths['/api/v1/assets'].get.summary").value("전체 자산 목록 조회"))
-                .andExpect(jsonPath("$.paths['/api/v1/assets/{id}'].get.summary").value("자산 단건 상세 조회"))
-                .andExpect(jsonPath("$.components.schemas['AssetRequest']").exists())
-                .andExpect(jsonPath("$.components.schemas['AssetResponse']").exists());
+                .andExpect(jsonPath("$.paths['/api/v1/category-groups']").exists())
+                .andExpect(jsonPath("$.paths['/api/v1/categories']").exists())
+                .andExpect(jsonPath("$.paths['/api/v1/accounts']").exists());
     }
 
     @Test
