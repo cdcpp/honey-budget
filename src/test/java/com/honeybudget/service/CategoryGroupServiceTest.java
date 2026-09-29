@@ -159,6 +159,28 @@ class CategoryGroupServiceTest {
             assertThat(responses.get(0).getCategoryGroupCode()).isEqualTo("100");
             assertThat(responses.get(1).getCategoryGroupCode()).isEqualTo("200");
         }
+
+        @Test
+        @DisplayName("등록된 대분류 그룹이 없을 때 다음 코드는 100을 반환")
+        void getNextCategoryGroupCodeDefaultWhenEmpty() {
+            given(categoryGroupRepository.findMaxCategoryGroupCode()).willReturn(0);
+
+            CategoryGroupResponse response = categoryGroupService.getNextCategoryGroupCode();
+
+            assertThat(response).isNotNull();
+            assertThat(response.getNextCode()).isEqualTo("100");
+        }
+
+        @Test
+        @DisplayName("등록된 대분류 그룹이 있을 때 최댓값 기준 100 증가된 코드 반환 (예: 200 -> 300)")
+        void getNextCategoryGroupCodeIncrementBy100() {
+            given(categoryGroupRepository.findMaxCategoryGroupCode()).willReturn(200);
+
+            CategoryGroupResponse response = categoryGroupService.getNextCategoryGroupCode();
+
+            assertThat(response).isNotNull();
+            assertThat(response.getNextCode()).isEqualTo("300");
+        }
     }
 
     @Nested

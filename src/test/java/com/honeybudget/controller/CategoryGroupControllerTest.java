@@ -130,6 +130,27 @@ class CategoryGroupControllerTest {
     }
 
     @Test
+    @DisplayName("대분류 그룹 다음 추천 코드 조회 (데이터 없음): GET /api/v1/category-groups/next-code -> 100")
+    void testGetNextCategoryGroupCodeEmptyReturns100() throws Exception {
+        mockMvc.perform(get("/api/v1/category-groups/next-code"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)))
+                .andExpect(jsonPath("$.data.nextCode", is("100")));
+    }
+
+    @Test
+    @DisplayName("대분류 그룹 다음 추천 코드 조회 (기존 데이터 존재): GET /api/v1/category-groups/next-code -> 300")
+    void testGetNextCategoryGroupCodeWithExistingReturns300() throws Exception {
+        categoryGroupRepository.save(CategoryGroup.builder().groupCode("100").groupName("수입").build());
+        categoryGroupRepository.save(CategoryGroup.builder().groupCode("200").groupName("지출").build());
+
+        mockMvc.perform(get("/api/v1/category-groups/next-code"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)))
+                .andExpect(jsonPath("$.data.nextCode", is("300")));
+    }
+
+    @Test
     @DisplayName("대분류 그룹 삭제 성공: DELETE /api/v1/category-groups/{id}")
     void testDeleteCategoryGroupSuccess() throws Exception {
         CategoryGroup group = categoryGroupRepository.save(

@@ -57,6 +57,17 @@ public class CategoryGroupController {
     }
 
     /**
+     * 다음 대분류 그룹 코드 조회 (100단위 증가)
+     */
+    @Operation(summary = "다음 대분류 그룹 코드 조회", description = "기존에 등록된 대분류 그룹 코드 중 최댓값을 기준으로 100단위 증가된 다음 추천 코드(예: 100, 200, 300)를 조회합니다. 등록된 그룹이 없으면 기본값 100을 반환합니다.")
+    @SwaggerApiResponse(responseCode = "200", description = "다음 대분류 그룹 코드 조회 성공")
+    @GetMapping("/next-code")
+    public ResponseEntity<ApiResponse<CategoryGroupResponse>> getNextCategoryGroupCode() {
+        CategoryGroupResponse response = categoryGroupService.getNextCategoryGroupCode();
+        return ResponseEntity.ok(ApiResponse.success("다음 대분류 그룹 코드가 성공적으로 조회되었습니다.", response));
+    }
+
+    /**
      * 대분류 그룹 단건 조회
      */
     @Operation(summary = "대분류 그룹 단건 상세 조회", description = "대분류 그룹 ID를 기반으로 특정 그룹의 상세 정보를 조회합니다.")

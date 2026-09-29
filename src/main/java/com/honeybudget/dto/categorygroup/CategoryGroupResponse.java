@@ -26,11 +26,15 @@ public class CategoryGroupResponse {
     @Schema(description = "대분류 그룹 명칭", example = "수입")
     private String categoryGroupName;
 
+    @Schema(description = "대분류 다음 코드", example = "100")
+    private String nextCode;
+
     @Schema(description = "생성 일시", example = "2026-09-27T10:00:00")
     private LocalDateTime createdAt;
 
     @Schema(description = "최종 수정 일시", example = "2026-09-27T10:00:00")
     private LocalDateTime updatedAt;
+
 
     public static CategoryGroupResponse from(CategoryGroup group) {
         if (group == null) {
@@ -42,6 +46,15 @@ public class CategoryGroupResponse {
                 .categoryGroupName(group.getCategoryGroupName())
                 .createdAt(group.getCreatedAt())
                 .updatedAt(group.getUpdatedAt())
+                .build();
+    }
+
+    public static CategoryGroupResponse fromNextCode(String seq) {
+        if(seq == null) {
+            return null;
+        }
+        return  CategoryGroupResponse.builder()
+                .nextCode(seq)
                 .build();
     }
 }

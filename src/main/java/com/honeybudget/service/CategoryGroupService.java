@@ -93,6 +93,18 @@ public class CategoryGroupService {
     }
 
     /**
+     * 다음 대분류 그룹 코드 조회 (100단위 증가)
+     * 등록된 그룹 코드 중 최댓값을 기준으로 100단위 증가된 다음 코드를 반환합니다.
+     * 등록된 그룹이 없거나 유효한 숫자 코드가 없는 경우 기본값 "100"을 반환합니다.
+     */
+    public CategoryGroupResponse getNextCategoryGroupCode() {
+        int maxCode = categoryGroupRepository.findMaxCategoryGroupCode();
+        int nextCode = (maxCode == 0) ? 100 : maxCode + 100;
+
+        return CategoryGroupResponse.fromNextCode(String.valueOf(nextCode));
+    }
+
+    /**
      * 대분류 그룹 삭제
      */
     @Transactional
