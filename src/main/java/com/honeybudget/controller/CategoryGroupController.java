@@ -57,7 +57,7 @@ public class CategoryGroupController {
     }
 
     /**
-     * 다음 대분류 그룹 코드 조회 (100단위 증가)
+     * 다음 대분류 그룹 코드 조회 (100단위 증가) - 수정필요함
      */
     @Operation(summary = "다음 대분류 그룹 코드 조회", description = "기존에 등록된 대분류 그룹 코드 중 최댓값을 기준으로 100단위 증가된 다음 추천 코드(예: 100, 200, 300)를 조회합니다. 등록된 그룹이 없으면 기본값 100을 반환합니다.")
     @SwaggerApiResponse(responseCode = "200", description = "다음 대분류 그룹 코드 조회 성공")
