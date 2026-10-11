@@ -168,4 +168,59 @@ class CategoryControllerTest {
         mockMvc.perform(get("/api/v1/categories/" + category.getId()))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    @DisplayName("다음 중분류 카테고리 코드 조회 성공 (기존 데이터 없음): 200 그룹 -> 201 반환")
+    void testGetNextCategoryCodeEmptyReturns201() throws Exception {
+        mockMvc.perform(get("/api/v1/categories/next-code")
+                        .param("CategoryGroupCode", "200"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)))
+                .andExpect(jsonPath("$.data.nextCode", is("201")));
+    }
+
+    @Test
+    @DisplayName("다음 중분류 카테고리 코드 조회 성공 (기존 데이터 존재): 201, 202 등록 후 203 반환")
+    void testGetNextCategoryCodeWithExistingReturnsMaxPlusOne() throws Exception {
+        categoryRepository.save(Category.builder().group(sampleGroup).categoryCode("201").categoryName("식비").build());
+        categoryRepository.save(Category.builder().group(sampleGroup).categoryCode("202").categoryName("교통비").build());
+
+        mockMvc.perform(get("/api/v1/categories/next-code")
+                        .param("CategoryGroupCode", "200"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)))
+                .andExpect(jsonPath("$.data.nextCode", is("203")));
+    }
+
+    @Test
+    @DisplayName("대분류 그룹별로 독립적으로 다음 코드 채번 검증")
+    void testGetNextCategoryCodeIndependentByGroup() throws Exception {
+        CategoryGroup incomeGroup = categoryGroupRepository.save(
+                CategoryGroup.builder().groupCode("100").groupName("수입").build()
+        );
+
+        categoryRepository.save(Category.builder().group(incomeGroup).categoryCode("101").categoryName("급여").build());
+        categoryRepository.save(Category.builder().group(sampleGroup).categoryCode("201").categoryName("식비").build());
+
+        // 100 그룹은 102 반환
+        mockMvc.perform(get("/api/v1/categories/next-code")
+                        .param("CategoryGroupCode", "100"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.nextCode", is("102")));
+
+        // 200 그룹은 202 반환
+        mockMvc.perform(get("/api/v1/categories/next-code")
+                        .param("CategoryGroupCode", "200"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.nextCode", is("202")));
+    }
+
+    @Test
+    @DisplayName("다음 중분류 카테고리 코드 조회 실패: CategoryGroupCode 파라미터 누락 시 400 Bad Request")
+    void testGetNextCategoryCodeMissingParamReturnsBadRequest() throws Exception {
+        mockMvc.perform(get("/api/v1/categories/next-code"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.success", is(false)))
+                .andExpect(jsonPath("$.message", is("대분류 그룹 코드는 필수입니다.")));
+    }
 }

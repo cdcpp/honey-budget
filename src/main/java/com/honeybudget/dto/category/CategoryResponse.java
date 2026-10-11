@@ -1,6 +1,7 @@
 package com.honeybudget.dto.category;
 
 import com.honeybudget.domain.Category;
+import com.honeybudget.dto.categorygroup.CategoryGroupResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -40,6 +41,18 @@ public class CategoryResponse {
 
     @Schema(description = "최종 수정 일시", example = "2026-09-27T10:00:00")
     private LocalDateTime updatedAt;
+
+    @Schema(description = "중분류 다음 코드", example = "101")
+    private String nextCode;
+
+    public static CategoryResponse fromNextCode(String seq) {
+        if(seq == null) {
+            return null;
+        }
+        return  CategoryResponse.builder()
+                .nextCode(seq)
+                .build();
+    }
 
     public static CategoryResponse from(Category category) {
         if (category == null) {

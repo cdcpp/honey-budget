@@ -5,6 +5,7 @@ import com.honeybudget.domain.CategoryGroup;
 import com.honeybudget.dto.category.CategoryCreateRequest;
 import com.honeybudget.dto.category.CategoryResponse;
 import com.honeybudget.dto.category.CategoryUpdateRequest;
+import com.honeybudget.dto.categorygroup.CategoryGroupResponse;
 import com.honeybudget.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -142,5 +143,29 @@ public class CategoryService {
         }
         return categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다. ID: " + categoryId));
+    }
+
+    /**
+     * 다음 중분류 카테고리 코드 조회 (1단위 증가)
+     * 대분류 그룹 코드에 속한 중분류 카테고리 코드 중 최댓값을 기준으로 1단위 증가된 다음 추천 코드(예: 101, 102, 103)를 반환합니다.
+     * 해당 대분류 그룹에 등록된 카테고리가 없는 경우 기본 시작 코드(대분류 코드 + 1, 예: 100 -> 101, 200 -> 201)를 반환합니다.
+     */
+    public CategoryResponse getNextCategoryCode(String categoryGroupCode) {
+        if (categoryGroupCode == null || categoryGroupCode.isBlank()) {
+            throw new IllegalArgumentException("대분류 그룹 코드는 필수입니다.");
+        }
+
+        String trimmedGroupCode = categoryGroupCode.trim();
+        int baseCode;
+        try {
+            baseCode = Integer.parseInt(trimmedGroupCode);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("대분류 그룹 코드는 숫자 형식이어야 합니다: " + categoryGroupCode);
+        }
+
+        int maxCode = categoryRepository.findMaxCategoryCodeByGroupCode(trimmedGroupCode);
+        int nextCode = (maxCode == 0) ? baseCode + 1 : maxCode + 1;
+
+        return CategoryResponse.fromNextCode(String.valueOf(nextCode));
     }
 }

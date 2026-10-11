@@ -204,4 +204,62 @@ class CategoryServiceTest {
             verify(categoryRepository).delete(category);
         }
     }
+
+    @Nested
+    @DisplayName("다음 중분류 카테고리 코드 조회 테스트")
+    class GetNextCategoryCodeTest {
+
+        @Test
+        @DisplayName("해당 대분류에 카테고리가 없는 경우 기본 시작 코드 반환 (100 -> 101)")
+        void getNextCategoryCodeWhenNoExistingReturnsGroupPlusOne() {
+            given(categoryRepository.findMaxCategoryCodeByGroupCode("100")).willReturn(0);
+
+            CategoryResponse response = categoryService.getNextCategoryCode("100");
+
+            assertThat(response).isNotNull();
+            assertThat(response.getNextCode()).isEqualTo("101");
+        }
+
+        @Test
+        @DisplayName("해당 대분류(200)에 카테고리가 없는 경우 기본 시작 코드 반환 (200 -> 201)")
+        void getNextCategoryCodeForGroup200Returns201() {
+            given(categoryRepository.findMaxCategoryCodeByGroupCode("200")).willReturn(0);
+
+            CategoryResponse response = categoryService.getNextCategoryCode("200");
+
+            assertThat(response).isNotNull();
+            assertThat(response.getNextCode()).isEqualTo("201");
+        }
+
+        @Test
+        @DisplayName("해당 대분류에 기존 카테고리가 존재하는 경우 (최댓값 + 1) 코드 반환 (102 -> 103)")
+        void getNextCategoryCodeWithExistingReturnsMaxPlusOne() {
+            given(categoryRepository.findMaxCategoryCodeByGroupCode("100")).willReturn(102);
+
+            CategoryResponse response = categoryService.getNextCategoryCode("100");
+
+            assertThat(response).isNotNull();
+            assertThat(response.getNextCode()).isEqualTo("103");
+        }
+
+        @Test
+        @DisplayName("대분류 그룹 코드가 null이거나 비어있으면 IllegalArgumentException 발생")
+        void getNextCategoryCodeWithNullOrBlankThrowsException() {
+            assertThatThrownBy(() -> categoryService.getNextCategoryCode(null))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("대분류 그룹 코드는 필수입니다.");
+
+            assertThatThrownBy(() -> categoryService.getNextCategoryCode("   "))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("대분류 그룹 코드는 필수입니다.");
+        }
+
+        @Test
+        @DisplayName("대분류 그룹 코드가 숫자가 아니면 IllegalArgumentException 발생")
+        void getNextCategoryCodeWithNonNumericThrowsException() {
+            assertThatThrownBy(() -> categoryService.getNextCategoryCode("ABC"))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("대분류 그룹 코드는 숫자 형식이어야 합니다");
+        }
+    }
 }

@@ -5,6 +5,7 @@ import com.honeybudget.common.SwaggerApiResponse;
 import com.honeybudget.dto.category.CategoryCreateRequest;
 import com.honeybudget.dto.category.CategoryResponse;
 import com.honeybudget.dto.category.CategoryUpdateRequest;
+import com.honeybudget.dto.categorygroup.CategoryGroupResponse;
 import com.honeybudget.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -99,5 +100,30 @@ public class CategoryController {
     ) {
         categoryService.deleteCategory(id);
         return ResponseEntity.ok(ApiResponse.ok("카테고리가 성공적으로 삭제되었습니다."));
+    }
+
+    /**
+     * 다음 중분류 카테고리 코드 조회 (1단위 증가)
+     */
+    @Operation(
+            summary = "다음 중분류 카테고리 코드 조회",
+            description = "대분류 그룹 코드(CategoryGroupCode)에 속한 중분류 카테고리 코드 중 최댓값을 기준으로 1단위 증가된 다음 추천 코드(예: 101, 102, 103)를 조회합니다. 등록된 카테고리가 없으면 해당 대분류의 기본 시작 코드(예: 101, 201)를 반환합니다."
+    )
+    @SwaggerApiResponse(responseCode = "200", description = "다음 중분류 카테고리 코드 조회 성공")
+    @SwaggerApiResponse(responseCode = "400", description = "대분류 그룹 코드 누락 또는 잘못된 형식")
+    @GetMapping("/next-code")
+    public ResponseEntity<ApiResponse<CategoryResponse>> getNextCategoryCode(
+            @Parameter(description = "대분류 그룹 코드 (예: 100, 200)", example = "100", required = true)
+            @RequestParam(value = "CategoryGroupCode", required = false)
+            String categoryGroupCode,
+            @Parameter(hidden = true)
+            @RequestParam(value = "categoryGroupCode", required = false)
+            String fallbackCategoryGroupCode
+    ) {
+        String targetCode = (categoryGroupCode != null && !categoryGroupCode.isBlank())
+                ? categoryGroupCode
+                : fallbackCategoryGroupCode;
+        CategoryResponse response = categoryService.getNextCategoryCode(targetCode);
+        return ResponseEntity.ok(ApiResponse.success("다음 중분류 카테고리 코드가 성공적으로 조회되었습니다.", response));
     }
 }
