@@ -16,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,8 +70,6 @@ class AccountServiceTest {
             AccountCreateRequest request = AccountCreateRequest.builder()
                     .accountName("토스 생활비 통장")
                     .institutionName("토스뱅크")
-                    .accountNumber("1000-1234-5678")
-                    .balance(new BigDecimal("500000"))
                     .categoryId(1L)
                     .memo("생활비 전용")
                     .build();
@@ -80,14 +77,10 @@ class AccountServiceTest {
             Account account = Account.builder()
                     .accountName("토스 생활비 통장")
                     .institutionName("토스뱅크")
-                    .accountNumber("1000-1234-5678")
-                    .balance(new BigDecimal("500000"))
                     .category(sampleCategory)
                     .memo("생활비 전용")
                     .build();
 
-            given(accountRepository.existsByInstitutionNameAndAccountNumber("토스뱅크", "1000-1234-5678"))
-                    .willReturn(false);
             given(categoryService.findCategoryById(1L)).willReturn(sampleCategory);
             given(accountRepository.save(any(Account.class))).willReturn(account);
 
@@ -96,29 +89,23 @@ class AccountServiceTest {
             assertThat(response).isNotNull();
             assertThat(response.getAccountName()).isEqualTo("토스 생활비 통장");
             assertThat(response.getInstitutionName()).isEqualTo("토스뱅크");
-            assertThat(response.getAccountNumber()).isEqualTo("1000-1234-5678");
-            assertThat(response.getBalance()).isEqualByComparingTo(new BigDecimal("500000"));
             assertThat(response.getCategoryName()).isEqualTo("생활비 통장");
             assertThat(response.getUseYn()).isTrue();
             verify(accountRepository).save(any(Account.class));
         }
 
         @Test
-        @DisplayName("동일 금융기관 및 계좌번호 중복 시 IllegalArgumentException 발생")
-        void createDuplicateThrowsException() {
+        @DisplayName("계좌 명칭 누락 시 IllegalArgumentException 발생")
+        void createMissingAccountNameThrowsException() {
             AccountCreateRequest request = AccountCreateRequest.builder()
-                    .accountName("토스 생활비 통장")
+                    .accountName("")
                     .institutionName("토스뱅크")
-                    .accountNumber("1000-1234-5678")
                     .categoryId(1L)
                     .build();
 
-            given(accountRepository.existsByInstitutionNameAndAccountNumber("토스뱅크", "1000-1234-5678"))
-                    .willReturn(true);
-
             assertThatThrownBy(() -> accountService.createAccount(request))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("해당 금융기관에 이미 등록된 계좌번호입니다: 토스뱅크 - 1000-1234-5678");
+                    .hasMessageContaining("계좌 명칭은 필수입니다.");
         }
     }
 
@@ -132,8 +119,6 @@ class AccountServiceTest {
             Account account = Account.builder()
                     .accountName("토스 생활비 통장")
                     .institutionName("토스뱅크")
-                    .accountNumber("1000-1234-5678")
-                    .balance(new BigDecimal("500000"))
                     .category(sampleCategory)
                     .memo("생활비 전용")
                     .build();
@@ -179,7 +164,6 @@ class AccountServiceTest {
             Account account = Account.builder()
                     .accountName("토스 생활비 통장")
                     .institutionName("토스뱅크")
-                    .accountNumber("1000-1234-5678")
                     .category(sampleCategory)
                     .build();
 
@@ -194,8 +178,8 @@ class AccountServiceTest {
         @Test
         @DisplayName("필터 없이 전체 조회")
         void getAllAccountsWithoutFilter() {
-            Account acc1 = Account.builder().accountName("계좌1").institutionName("국민").accountNumber("111").category(sampleCategory).build();
-            Account acc2 = Account.builder().accountName("계좌2").institutionName("신한").accountNumber("222").category(sampleCategory).build();
+            Account acc1 = Account.builder().accountName("계좌1").institutionName("국민").category(sampleCategory).build();
+            Account acc2 = Account.builder().accountName("계좌2").institutionName("신한").category(sampleCategory).build();
 
             given(accountRepository.findAllByOrderByIdDesc()).willReturn(List.of(acc1, acc2));
 
@@ -207,7 +191,7 @@ class AccountServiceTest {
         @Test
         @DisplayName("활성 여부(useYn) 필터로 조회")
         void getAllAccountsWithUseYnFilter() {
-            Account acc1 = Account.builder().accountName("계좌1").institutionName("국민").accountNumber("111").category(sampleCategory).build();
+            Account acc1 = Account.builder().accountName("계좌1").institutionName("국민").category(sampleCategory).build();
 
             given(accountRepository.findAllByUseYnOrderByIdDesc(true)).willReturn(List.of(acc1));
 
@@ -227,7 +211,6 @@ class AccountServiceTest {
             Account account = Account.builder()
                     .accountName("토스 생활비 통장")
                     .institutionName("토스뱅크")
-                    .accountNumber("1000-1234-5678")
                     .category(sampleCategory)
                     .build();
 
@@ -238,47 +221,6 @@ class AccountServiceTest {
             accountService.deleteAccount(1L);
 
             assertThat(account.getUseYn()).isFalse();
-        }
-    }
-
-    @Nested
-    @DisplayName("계좌 입출금 테스트")
-    class DepositAndWithdrawTest {
-
-        @Test
-        @DisplayName("입금 성공")
-        void depositSuccess() {
-            Account account = Account.builder()
-                    .accountName("토스 생활비 통장")
-                    .institutionName("토스뱅크")
-                    .accountNumber("1000-1234-5678")
-                    .balance(new BigDecimal("100000"))
-                    .category(sampleCategory)
-                    .build();
-
-            given(accountRepository.findById(1L)).willReturn(Optional.of(account));
-
-            AccountResponse response = accountService.deposit(1L, new BigDecimal("50000"));
-
-            assertThat(response.getBalance()).isEqualByComparingTo(new BigDecimal("150000"));
-        }
-
-        @Test
-        @DisplayName("출금 성공")
-        void withdrawSuccess() {
-            Account account = Account.builder()
-                    .accountName("토스 생활비 통장")
-                    .institutionName("토스뱅크")
-                    .accountNumber("1000-1234-5678")
-                    .balance(new BigDecimal("100000"))
-                    .category(sampleCategory)
-                    .build();
-
-            given(accountRepository.findById(1L)).willReturn(Optional.of(account));
-
-            AccountResponse response = accountService.withdraw(1L, new BigDecimal("40000"));
-
-            assertThat(response.getBalance()).isEqualByComparingTo(new BigDecimal("60000"));
         }
     }
 }

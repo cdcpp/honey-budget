@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Schema(description = "계좌 응답 DTO")
@@ -26,12 +25,6 @@ public class AccountResponse {
 
     @Schema(description = "금융기관/은행/증권사명", example = "토스뱅크")
     private String institutionName;
-
-    @Schema(description = "계좌번호", example = "1000-1234-5678")
-    private String accountNumber;
-
-    @Schema(description = "현재 잔액", example = "1500000.00")
-    private BigDecimal balance;
 
     @Schema(description = "소속 카테고리(중분류) ID", example = "1")
     private Long categoryId;
@@ -85,8 +78,6 @@ public class AccountResponse {
                 .id(account.getId())
                 .accountName(account.getAccountName())
                 .institutionName(account.getInstitutionName())
-                .accountNumber(account.getAccountNumber())
-                .balance(account.getBalance())
                 .categoryId(categoryId)
                 .categoryCode(categoryCode)
                 .categoryName(categoryName)

@@ -16,8 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -65,8 +63,6 @@ class AccountControllerTest {
                 {
                     "accountName": "토스 생활비 통장",
                     "institutionName": "토스뱅크",
-                    "accountNumber": "1000-1234-5678",
-                    "balance": 500000,
                     "categoryId": %d,
                     "memo": "생활비 전용"
                 }
@@ -79,37 +75,9 @@ class AccountControllerTest {
                 .andExpect(jsonPath("$.success", is(true)))
                 .andExpect(jsonPath("$.data.accountName", is("토스 생활비 통장")))
                 .andExpect(jsonPath("$.data.institutionName", is("토스뱅크")))
-                .andExpect(jsonPath("$.data.accountNumber", is("1000-1234-5678")))
-                .andExpect(jsonPath("$.data.balance", is(500000)))
                 .andExpect(jsonPath("$.data.categoryCode", is("201")))
                 .andExpect(jsonPath("$.data.useYn", is(true)))
                 .andExpect(jsonPath("$.data.id").isNumber());
-    }
-
-    @Test
-    @DisplayName("계좌 등록 실패: 동일 금융기관 및 계좌번호 중복 시 400 Bad Request 반환")
-    void testCreateDuplicateAccountThrowsBadRequest() throws Exception {
-        String requestJson = String.format("""
-                {
-                    "accountName": "토스 생활비 통장",
-                    "institutionName": "토스뱅크",
-                    "accountNumber": "1000-1234-5678",
-                    "balance": 500000,
-                    "categoryId": %d
-                }
-                """, sampleCategory.getId());
-
-        mockMvc.perform(post("/api/v1/accounts")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson))
-                .andExpect(status().isCreated());
-
-        mockMvc.perform(post("/api/v1/accounts")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.success", is(false)))
-                .andExpect(jsonPath("$.message").value("해당 금융기관에 이미 등록된 계좌번호입니다: 토스뱅크 - 1000-1234-5678"));
     }
 
     @Test
@@ -119,8 +87,6 @@ class AccountControllerTest {
                 Account.builder()
                         .accountName("토스 생활비 통장")
                         .institutionName("토스뱅크")
-                        .accountNumber("1000-1234-5678")
-                        .balance(new BigDecimal("500000"))
                         .category(sampleCategory)
                         .memo("초기 메모")
                         .build()
@@ -149,8 +115,6 @@ class AccountControllerTest {
                 Account.builder()
                         .accountName("토스 생활비 통장")
                         .institutionName("토스뱅크")
-                        .accountNumber("1000-1234-5678")
-                        .balance(new BigDecimal("500000"))
                         .category(sampleCategory)
                         .build()
         );
@@ -169,8 +133,6 @@ class AccountControllerTest {
                 Account.builder()
                         .accountName("생활비 통장")
                         .institutionName("국민은행")
-                        .accountNumber("111-222-333")
-                        .balance(new BigDecimal("100000"))
                         .category(sampleCategory)
                         .build()
         );
@@ -179,8 +141,6 @@ class AccountControllerTest {
                 Account.builder()
                         .accountName("해지 통장")
                         .institutionName("신한은행")
-                        .accountNumber("444-555-666")
-                        .balance(new BigDecimal("0"))
                         .category(sampleCategory)
                         .build()
         );
@@ -208,8 +168,6 @@ class AccountControllerTest {
                 Account.builder()
                         .accountName("토스 생활비 통장")
                         .institutionName("토스뱅크")
-                        .accountNumber("1000-1234-5678")
-                        .balance(new BigDecimal("500000"))
                         .category(sampleCategory)
                         .build()
         );
@@ -222,56 +180,5 @@ class AccountControllerTest {
         mockMvc.perform(get("/api/v1/accounts/" + account.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.useYn", is(false)));
-    }
-
-    @Test
-    @DisplayName("계좌 입금 및 출금: POST /api/v1/accounts/{id}/deposit, /withdraw")
-    void testDepositAndWithdraw() throws Exception {
-        Account account = accountRepository.save(
-                Account.builder()
-                        .accountName("토스 생활비 통장")
-                        .institutionName("토스뱅크")
-                        .accountNumber("1000-1234-5678")
-                        .balance(new BigDecimal("100000.00"))
-                        .category(sampleCategory)
-                        .build()
-        );
-
-        // 50,000원 입금 -> 잔액 150,000
-        String depositJson = """
-                {
-                    "amount": 50000
-                }
-                """;
-        mockMvc.perform(post("/api/v1/accounts/" + account.getId() + "/deposit")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(depositJson))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.balance", is(150000.0)));
-
-        // 30,000원 출금 -> 잔액 120,000
-        String withdrawJson = """
-                {
-                    "amount": 30000
-                }
-                """;
-        mockMvc.perform(post("/api/v1/accounts/" + account.getId() + "/withdraw")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(withdrawJson))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.balance", is(120000.0)));
-
-        // 잔액 초과 출금(200,000원) 시 400 Bad Request
-        String overWithdrawJson = """
-                {
-                    "amount": 200000
-                }
-                """;
-        mockMvc.perform(post("/api/v1/accounts/" + account.getId() + "/withdraw")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(overWithdrawJson))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.success", is(false)))
-                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("잔액이 부족합니다")));
     }
 }

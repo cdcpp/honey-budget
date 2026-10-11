@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -35,27 +34,16 @@ public class AccountService {
         if (request.getInstitutionName() == null || request.getInstitutionName().isBlank()) {
             throw new IllegalArgumentException("금융기관명은 필수입니다.");
         }
-        if (request.getAccountNumber() == null || request.getAccountNumber().isBlank()) {
-            throw new IllegalArgumentException("계좌번호는 필수입니다.");
-        }
         if (request.getCategoryId() == null) {
             throw new IllegalArgumentException("카테고리 ID는 필수입니다.");
         }
 
         String trimmedInstitution = request.getInstitutionName().trim();
-        String trimmedNumber = request.getAccountNumber().trim();
-
-        if (accountRepository.existsByInstitutionNameAndAccountNumber(trimmedInstitution, trimmedNumber)) {
-            throw new IllegalArgumentException("해당 금융기관에 이미 등록된 계좌번호입니다: " + trimmedInstitution + " - " + trimmedNumber);
-        }
-
         Category category = categoryService.findCategoryById(request.getCategoryId());
 
         Account account = Account.builder()
                 .accountName(request.getAccountName().trim())
                 .institutionName(trimmedInstitution)
-                .accountNumber(trimmedNumber)
-                .balance(request.getBalance())
                 .category(category)
                 .memo(request.getMemo() != null ? request.getMemo().trim() : null)
                 .build();
@@ -131,26 +119,6 @@ public class AccountService {
     public void deleteAccount(Long accountId) {
         Account account = findAccountById(accountId);
         account.deactivate();
-    }
-
-    /**
-     * 계좌 잔액 입금 (도메인 메서드 deposit 연계)
-     */
-    @Transactional
-    public AccountResponse deposit(Long accountId, BigDecimal amount) {
-        Account account = findAccountById(accountId);
-        account.deposit(amount);
-        return AccountResponse.from(account);
-    }
-
-    /**
-     * 계좌 잔액 출금 (도메인 메서드 withdraw 연계)
-     */
-    @Transactional
-    public AccountResponse withdraw(Long accountId, BigDecimal amount) {
-        Account account = findAccountById(accountId);
-        account.withdraw(amount);
-        return AccountResponse.from(account);
     }
 
     /**
