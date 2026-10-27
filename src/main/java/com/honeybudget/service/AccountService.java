@@ -113,12 +113,15 @@ public class AccountService {
     }
 
     /**
-     * 계좌 비활성화 / 해지 처리 (Soft Delete)
+     * 계좌 삭제 (Delete)
      */
     @Transactional
     public void deleteAccount(Long accountId) {
+        if (accountId == null) {
+            throw new IllegalArgumentException("계좌 ID는 필수입니다.");
+        }
         Account account = findAccountById(accountId);
-        account.deactivate();
+        accountRepository.delete(account);
     }
 
     /**

@@ -162,7 +162,7 @@ class AccountControllerTest {
     }
 
     @Test
-    @DisplayName("계좌 비활성화(Soft Delete): DELETE /api/v1/accounts/{id}")
+    @DisplayName("계좌 삭제: DELETE /api/v1/accounts/{id}")
     void testDeleteAccountSuccess() throws Exception {
         Account account = accountRepository.save(
                 Account.builder()
@@ -175,10 +175,10 @@ class AccountControllerTest {
         mockMvc.perform(delete("/api/v1/accounts/" + account.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)))
-                .andExpect(jsonPath("$.message").value("계좌가 성공적으로 비활성화(해지)되었습니다."));
+                .andExpect(jsonPath("$.message").value("계좌가 성공적으로 삭제되었습니다."));
 
         mockMvc.perform(get("/api/v1/accounts/" + account.getId()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.useYn", is(false)));
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.success", is(false)));
     }
 }

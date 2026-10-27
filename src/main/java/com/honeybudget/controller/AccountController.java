@@ -88,17 +88,17 @@ public class AccountController {
     }
 
     /**
-     * 계좌 비활성화 / 해지 처리 (Soft Delete)
+     * 계좌 삭제 (Delete)
      */
-    @Operation(summary = "계좌 비활성화/해지 (삭제)", description = "계좌 ID를 기반으로 해당 계좌를 비활성화(Soft Delete, useYn = false) 처리합니다.")
-    @SwaggerApiResponse(responseCode = "200", description = "계좌 비활성화 성공")
+    @Operation(summary = "계좌 삭제", description = "계좌 ID를 기반으로 해당 계좌를 삭제합니다.")
+    @SwaggerApiResponse(responseCode = "200", description = "계좌 삭제 성공")
     @SwaggerApiResponse(responseCode = "400", description = "존재하지 않는 계좌 ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteAccount(
-            @Parameter(description = "삭제(비활성화)할 계좌의 고유 ID", example = "1")
+            @Parameter(description = "삭제할 계좌의 고유 ID", example = "1")
             @PathVariable("id") Long id
     ) {
         accountService.deleteAccount(id);
-        return ResponseEntity.ok(ApiResponse.ok("계좌가 성공적으로 비활성화(해지)되었습니다."));
+        return ResponseEntity.ok(ApiResponse.ok("계좌가 성공적으로 삭제되었습니다."));
     }
 }

@@ -202,11 +202,11 @@ class AccountServiceTest {
     }
 
     @Nested
-    @DisplayName("계좌 삭제(Soft Delete) 테스트")
+    @DisplayName("계좌 삭제 테스트")
     class DeleteAccountTest {
 
         @Test
-        @DisplayName("삭제 시 계좌 useYn이 false로 변경됨")
+        @DisplayName("계좌 삭제 성공")
         void deleteAccountSuccess() {
             Account account = Account.builder()
                     .accountName("토스 생활비 통장")
@@ -216,11 +216,19 @@ class AccountServiceTest {
 
             given(accountRepository.findById(1L)).willReturn(Optional.of(account));
 
-            assertThat(account.getUseYn()).isTrue();
-
             accountService.deleteAccount(1L);
 
-            assertThat(account.getUseYn()).isFalse();
+            verify(accountRepository).delete(account);
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 계좌 삭제 시 예외 발생")
+        void deleteAccountNotFound() {
+            given(accountRepository.findById(999L)).willReturn(Optional.empty());
+
+            assertThatThrownBy(() -> accountService.deleteAccount(999L))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("존재하지 않는 계좌입니다. ID: 999");
         }
     }
 }
