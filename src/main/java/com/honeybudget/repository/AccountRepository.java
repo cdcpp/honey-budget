@@ -19,6 +19,9 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     List<Account> findAllByUseYnOrderByIdDesc(Boolean useYn);
 
     @EntityGraph(attributePaths = {"category", "category.group"})
+    List<Account> findAllByUseYnOrderByIdAsc(Boolean useYn);
+
+    @EntityGraph(attributePaths = {"category", "category.group"})
     List<Account> findAllByCategoryIdOrderByIdDesc(Long categoryId);
 
     @EntityGraph(attributePaths = {"category", "category.group"})
