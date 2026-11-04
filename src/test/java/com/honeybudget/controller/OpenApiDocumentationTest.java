@@ -32,7 +32,8 @@ class OpenApiDocumentationTest {
                 .andExpect(jsonPath("$.info.version").value("v1.0.0"))
                 .andExpect(jsonPath("$.paths['/api/v1/category-groups']").exists())
                 .andExpect(jsonPath("$.paths['/api/v1/categories']").exists())
-                .andExpect(jsonPath("$.paths['/api/v1/accounts']").exists());
+                .andExpect(jsonPath("$.paths['/api/v1/accounts']").exists())
+                .andExpect(jsonPath("$.paths['/api/v1/account-transactions']").exists());
     }
 
     @Test
