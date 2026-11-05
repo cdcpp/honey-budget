@@ -9,57 +9,76 @@
 
 ## 🛠 Tech Stack
 - **Language:** Java 17
-- **Framework:** Spring Boot 3.x
-- **ORM:** : JPA
+- **Framework:** Spring Boot 4.1
+- **ORM:** : Spring Data JPA
 - **Database:** H2 (Dev), MySQL
 
 
 ## 🧩 Database Modeling
 ```mermaid
 erDiagram
-    ASSET ||--o{ ASSET_SNAPSHOT : "매월 1회 잔액 기록"
-    ASSET ||--o{ TRANSACTION : "출금 통장"
-    CATEGORY ||--o{ TRANSACTION : "지출 분류"
+    CATEGORY_GROUP ||--o{ CATEGORY : "대분류-중분류"
+    CATEGORY ||--o{ ACCOUNT : "계좌 목적 분류"
+    ACCOUNT ||--o{ ACCOUNTYEARMONTH : "연도별 월 금액 (계좌+연도당 1행)"
+    ACCOUNT ||--o{ ACCOUNT_TRANSACTION : "일자별 거래 내역"
 
-    ASSET {
-        int asset_id PK
-        string name "통장명 (생활비, 고정비, 자동차, 주식 등)"
-        string role "역할"
-    }
-    
-    ASSET_SNAPSHOT {
-        int snapshot_id PK
-        int asset_id FK
-        string record_month "기준월 (예: 2026-09)"
-        decimal balance "현황판 업데이트 시점의 현재 잔액"
-    }
-
-    MONTHLY_BUDGET {
-        int budget_id PK
-        string record_month "기준월"
-        decimal total_income "월 총수입"
-        decimal living_expense "생활비 할당"
-        decimal fixed_expense "고정비 할당"
+    CATEGORY_GROUP {
+        bigint category_group_id PK
+        varchar category_group_code UK "대분류 코드 (예: 100, 200)"
+        varchar category_group_name "대분류 명칭"
+        datetime created_at
+        datetime updated_at
     }
 
     CATEGORY {
-        int category_id PK
-        string type "분류명 (식비, 고정비용, 비고정지출, 자동차/병원비)"
+        bigint category_id PK
+        bigint category_group_id FK "대분류 그룹"
+        varchar category_code UK "중분류 코드 (예: 101, 201)"
+        varchar category_name "중분류 명칭 (예: 생활비, 비상금)"
+        datetime created_at
+        datetime updated_at
     }
 
-    TRANSACTION {
-        int transaction_id PK
-        date pay_date "결제일자"
-        int asset_id FK "돈이 나간 통장 (출금자산ID)"
-        int category_id FK "지출 목적 (카테고리ID)"
-        string merchant "사용처 (예: 쿠팡, 주유소)"
-        decimal amount "결제금액"
+    ACCOUNT {
+        bigint account_id PK
+        varchar account_name "계좌 별칭 (예: 토스 생활비 통장)"
+        varchar institution_name "금융기관명 (예: 토스뱅크)"
+        bigint category_id FK "계좌 목적 카테고리 (중분류)"
+        boolean use_yn "활성 여부 (Soft Delete)"
+        varchar memo "비고/메모"
+        datetime created_at
+        datetime updated_at
     }
 
-    TRANSACTION_DETAIL {
-        int detail_id PK
-        int transaction_id FK
-        string item_name "품목명 (예: 닭안심, 블루베리)"
-        decimal amount "개별 금액"
+    ACCOUNTYEARMONTH {
+        bigint account_yearmonth_id PK
+        bigint account_id FK "계좌 (UK: account_id + base_year)"
+        int base_year "연도 (예: 2026)"
+        decimal month_01 "1월 금액"
+        decimal month_02 "2월 금액"
+        decimal month_03 "3월 금액"
+        decimal month_04 "4월 금액"
+        decimal month_05 "5월 금액"
+        decimal month_06 "6월 금액"
+        decimal month_07 "7월 금액"
+        decimal month_08 "8월 금액"
+        decimal month_09 "9월 금액"
+        decimal month_10 "10월 금액"
+        decimal month_11 "11월 금액"
+        decimal month_12 "12월 금액"
+        datetime created_at
+        datetime updated_at
+    }
+
+    ACCOUNT_TRANSACTION {
+        bigint account_transaction_id PK
+        bigint account_id FK "대상 계좌"
+        varchar year_month "월별 시트 기준 연월 (YYYY-MM)"
+        date transaction_date "거래 일자"
+        decimal amount "거래 금액"
+        varchar description "사용처/내용 (예: 이마트 장보기)"
+        varchar memo "비고/메모"
+        datetime created_at
+        datetime updated_at
     }
 ```
