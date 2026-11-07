@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/** 계좌 등록 요청 DTO. */
 @Schema(description = "계좌 등록 요청 DTO")
 @Getter
 @Builder

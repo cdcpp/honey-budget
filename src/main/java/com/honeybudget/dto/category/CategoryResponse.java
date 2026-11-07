@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/** 중분류 카테고리 상세 응답 DTO. */
 @Schema(description = "중분류 카테고리 응답 DTO")
 @Getter
 @Builder

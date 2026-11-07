@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/** 대분류 그룹 응답 DTO. */
 @Schema(description = "대분류 그룹 응답 DTO")
 @Getter
 @Builder

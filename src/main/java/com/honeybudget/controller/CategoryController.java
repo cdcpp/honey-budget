@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 카테고리(중분류) 관리 API.
+ */
 @Tag(name = "Category (중분류 카테고리)", description = "가계부 중분류 카테고리 관리 API")
 @RestController
 @RequestMapping("/api/v1/categories")
@@ -26,9 +29,7 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    /**
-     * 중분류 카테고리 등록
-     */
+    /** 신규 중분류 카테고리를 등록한다. */
     @Operation(summary = "신규 중분류 카테고리 등록", description = "새로운 중분류 카테고리를 특정 대분류 그룹에 소속시켜 등록합니다. 카테고리 코드는 중복될 수 없습니다.")
     @SwaggerApiResponse(responseCode = "201", description = "카테고리 등록 성공")
     @SwaggerApiResponse(responseCode = "400", description = "입력값 검증 실패, 존재하지 않는 대분류 ID, 또는 코드 중복")
@@ -41,9 +42,7 @@ public class CategoryController {
                 .body(ApiResponse.success("카테고리가 성공적으로 등록되었습니다.", response));
     }
 
-    /**
-     * 중분류 카테고리 수정
-     */
+    /** 중분류 카테고리 명칭 및 소속 대분류 그룹을 수정한다. */
     @Operation(summary = "중분류 카테고리 수정", description = "카테고리 ID를 기반으로 카테고리 명칭 및 소속 대분류 그룹을 수정합니다.")
     @SwaggerApiResponse(responseCode = "200", description = "카테고리 수정 성공")
     @SwaggerApiResponse(responseCode = "400", description = "입력값 검증 실패 또는 존재하지 않는 ID")
@@ -57,9 +56,7 @@ public class CategoryController {
         return ResponseEntity.ok(ApiResponse.success("카테고리가 성공적으로 수정되었습니다.", response));
     }
 
-    /**
-     * 중분류 카테고리 단건 조회
-     */
+    /** 중분류 카테고리 단건 정보를 조회한다. */
     @Operation(summary = "중분류 카테고리 단건 상세 조회", description = "카테고리 ID를 기반으로 특정 카테고리의 상세 정보를 조회합니다.")
     @SwaggerApiResponse(responseCode = "200", description = "카테고리 조회 성공")
     @SwaggerApiResponse(responseCode = "400", description = "존재하지 않는 카테고리 ID")
@@ -72,9 +69,7 @@ public class CategoryController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
-    /**
-     * 중분류 카테고리 목록 조회 (대분류 그룹 ID 필터 옵션)
-     */
+    /** 중분류 카테고리 목록을 코드순으로 조회한다. 대분류 그룹 ID로 필터링할 수 있다. */
     @Operation(summary = "중분류 카테고리 목록 조회", description = "등록된 카테고리 목록을 코드순으로 조회합니다. categoryGroupId 파라미터로 특정 대분류 그룹의 카테고리만 필터링할 수 있습니다.")
     @SwaggerApiResponse(responseCode = "200", description = "카테고리 목록 조회 성공")
     @GetMapping
@@ -87,9 +82,7 @@ public class CategoryController {
         return ResponseEntity.ok(ApiResponse.success(responses));
     }
 
-    /**
-     * 중분류 카테고리 삭제
-     */
+    /** 중분류 카테고리를 삭제한다. */
     @Operation(summary = "중분류 카테고리 삭제", description = "카테고리 ID를 기반으로 특정 카테고리를 삭제합니다.")
     @SwaggerApiResponse(responseCode = "200", description = "카테고리 삭제 성공")
     @SwaggerApiResponse(responseCode = "400", description = "존재하지 않는 카테고리 ID")
@@ -102,9 +95,7 @@ public class CategoryController {
         return ResponseEntity.ok(ApiResponse.ok("카테고리가 성공적으로 삭제되었습니다."));
     }
 
-    /**
-     * 다음 중분류 카테고리 코드 조회 (1단위 증가)
-     */
+    /** 대분류 그룹 내 다음 추천 중분류 코드를 조회한다. (최댓값 + 1) */
     @Operation(
             summary = "다음 중분류 카테고리 코드 조회",
             description = "대분류 그룹 코드(CategoryGroupCode)에 속한 중분류 카테고리 코드 중 최댓값을 기준으로 1단위 증가된 다음 추천 코드(예: 101, 102, 103)를 조회합니다. 등록된 카테고리가 없으면 해당 대분류의 기본 시작 코드(예: 101, 201)를 반환합니다."

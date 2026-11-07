@@ -15,6 +15,9 @@ import org.springframework.util.ReflectionUtils;
 import java.lang.reflect.Field;
 import java.util.List;
 
+/**
+ * 카테고리(중분류)의 등록, 수정, 조회, 삭제를 처리하는 비즈니스 서비스.
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -24,7 +27,7 @@ public class CategoryService {
     private final CategoryGroupService categoryGroupService;
 
     /**
-     * 중분류 카테고리 등록
+     * 신규 중분류 카테고리를 등록한다. 코드가 중복되면 IllegalArgumentException을 던진다.
      */
     @Transactional
     public CategoryResponse createCategory(CategoryCreateRequest request) {
@@ -61,7 +64,7 @@ public class CategoryService {
     }
 
     /**
-     * 중분류 카테고리 수정 (명칭 및 소속 대분류 그룹 변경)
+     * 중분류 카테고리 명칭 및 소속 대분류 그룹을 수정한다.
      */
     @Transactional
     public CategoryResponse updateCategory(Long categoryId, CategoryUpdateRequest request) {
@@ -97,7 +100,7 @@ public class CategoryService {
     }
 
     /**
-     * 중분류 카테고리 단건 조회
+     * 중분류 카테고리 단건 정보를 조회한다.
      */
     public CategoryResponse getCategoryById(Long categoryId) {
         if (categoryId == null) {
@@ -108,7 +111,7 @@ public class CategoryService {
     }
 
     /**
-     * 중분류 카테고리 목록 조회 (대분류 그룹 ID 필터 옵션 지원)
+     * 중분류 카테고리 목록을 코드순으로 조회한다. 대분류 그룹 ID로 필터링할 수 있다.
      */
     public List<CategoryResponse> getAllCategories(Long categoryGroupId) {
         List<Category> categories;
@@ -123,7 +126,7 @@ public class CategoryService {
     }
 
     /**
-     * 중분류 카테고리 삭제
+     * 중분류 카테고리를 삭제한다.
      */
     @Transactional
     public void deleteCategory(Long categoryId) {
@@ -135,7 +138,7 @@ public class CategoryService {
     }
 
     /**
-     * 내부 비즈니스 로직용 카테고리 단건 엔티티 조회
+     * 카테고리 단건 엔티티를 조회한다. 존재하지 않으면 IllegalArgumentException을 던진다.
      */
     public Category findCategoryById(Long categoryId) {
         if (categoryId == null) {
@@ -146,9 +149,7 @@ public class CategoryService {
     }
 
     /**
-     * 다음 중분류 카테고리 코드 조회 (1단위 증가)
-     * 대분류 그룹 코드에 속한 중분류 카테고리 코드 중 최댓값을 기준으로 1단위 증가된 다음 추천 코드(예: 101, 102, 103)를 반환합니다.
-     * 해당 대분류 그룹에 등록된 카테고리가 없는 경우 기본 시작 코드(대분류 코드 + 1, 예: 100 -> 101, 200 -> 201)를 반환합니다.
+     * 대분류 그룹 내 다음 추천 중분류 코드를 조회한다. (최댓값 + 1, 없으면 그룹시작코드 + 1)
      */
     public CategoryResponse getNextCategoryCode(String categoryGroupCode) {
         if (categoryGroupCode == null || categoryGroupCode.isBlank()) {

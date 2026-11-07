@@ -25,6 +25,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
+/**
+ * AccountService 단위 테스트.
+ */
 @ExtendWith(MockitoExtension.class)
 class AccountServiceTest {
 

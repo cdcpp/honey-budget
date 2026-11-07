@@ -14,6 +14,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * OpenAPI / Swagger 문서 엔드포인트 검증 테스트.
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 class OpenApiDocumentationTest {

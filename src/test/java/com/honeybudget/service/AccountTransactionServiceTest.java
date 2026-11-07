@@ -30,6 +30,9 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+/**
+ * AccountTransactionService 단위 테스트.
+ */
 @ExtendWith(MockitoExtension.class)
 class AccountTransactionServiceTest {
 

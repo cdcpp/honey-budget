@@ -17,6 +17,9 @@ import java.time.Year;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * 계좌별 연간 1~12월 금액 데이터 및 종합 명세표를 처리하는 비즈니스 서비스.
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -27,7 +30,7 @@ public class AccountYearMonthService {
     private final AccountService accountService;
 
     /**
-     * 계좌 연간 월별 금액 등록 (Create) - 계좌+연도당 1건
+     * 계좌 연간 월별 금액 행을 등록한다. (계좌+연도당 1건 유일)
      */
     @Transactional
     public AccountYearMonthResponse create(AccountYearMonthCreateRequest request) {
@@ -57,7 +60,7 @@ public class AccountYearMonthService {
     }
 
     /**
-     * 월별 금액 수정 (Update) - 요청에 포함된 월만 수정
+     * 요청에 포함된 월(1~12월)의 금액만 수정한다.
      */
     @Transactional
     public AccountYearMonthResponse update(Long id, AccountYearMonthUpdateRequest request) {
@@ -70,15 +73,15 @@ public class AccountYearMonthService {
     }
 
     /**
-     * 단건 조회 (Read)
+     * 월별 금액 행 단건을 조회한다.
      */
     public AccountYearMonthResponse getById(Long id) {
         return AccountYearMonthResponse.from(findById(id));
     }
 
     /**
-     * 특정 연도 기준 전체 계좌 월별 데이터 조회 (연도별 조회)
-     * 활성 계좌(useYn = true) 중 해당 연도 데이터가 아직 없는 경우 자동으로 기본값(0원) 생성
+     * 특정 연도의 모든 활성 계좌 월별 데이터를 조회한다.
+     * 데이터가 아직 없는 계좌는 0원으로 자동 생성한다.
      */
     @Transactional
     public List<AccountYearMonthResponse> getByYear(Integer year) {
@@ -113,7 +116,7 @@ public class AccountYearMonthService {
     }
 
     /**
-     * 연간 수입/저축/지출 명세표 종합 조회 (대분류 그룹별 소계 및 순수익 포함)
+     * 연간 종합 명세표를 조회한다. 대분류 그룹별 소계 및 월별 순수익이 계산된다.
      */
     @Transactional
     public AnnualStatementResponse getAnnualStatement(Integer year) {
@@ -123,7 +126,7 @@ public class AccountYearMonthService {
     }
 
     /**
-     * 목록 조회 (Read) - year, accountId 필터
+     * 조건(연도, 계좌 ID)에 맞는 월별 금액 목록을 조회한다.
      */
     @Transactional
     public List<AccountYearMonthResponse> getAll(Integer year, Long accountId) {

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.util.Map;
 
+/** 계좌 월별 금액 수정 요청 DTO. */
 @Schema(description = "계좌 연간 월별 금액 수정 요청 DTO")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

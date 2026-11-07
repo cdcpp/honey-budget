@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/** 중분류 카테고리 수정 요청 DTO. */
 @Schema(description = "중분류 카테고리 수정 요청 DTO")
 @Getter
 @Builder

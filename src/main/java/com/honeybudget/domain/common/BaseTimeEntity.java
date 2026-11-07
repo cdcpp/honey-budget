@@ -11,7 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 /**
- * 모든 엔티티의 생성 및 수정 시각을 자동으로 추적하는 공통 추상 클래스
+ * 생성 및 수정 일시를 추적하는 엔티티 공통 매핑 슈퍼클래스.
  */
 @Getter
 @MappedSuperclass

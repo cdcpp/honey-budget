@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/** 계좌 연간 월별 금액 응답 DTO. */
 @Schema(description = "계좌 연간 월별 금액 응답 DTO")
 @Getter
 @Builder

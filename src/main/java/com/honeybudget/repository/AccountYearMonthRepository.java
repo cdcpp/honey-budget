@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * 계좌별 연간 월별 금액 저장소.
+ */
 public interface AccountYearMonthRepository extends JpaRepository<AccountYearMonth, Long> {
 
     @EntityGraph(attributePaths = {"account", "account.category", "account.category.group"})

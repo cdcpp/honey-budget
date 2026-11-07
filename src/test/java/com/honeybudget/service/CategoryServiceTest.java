@@ -24,6 +24,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
+/**
+ * CategoryService 단위 테스트.
+ */
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceTest {
 

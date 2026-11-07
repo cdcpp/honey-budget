@@ -12,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * 계좌 등록, 수정, 조회, 삭제를 처리하는 비즈니스 서비스.
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -21,7 +24,8 @@ public class AccountService {
     private final CategoryService categoryService;
 
     /**
-     * 계좌 등록 (Create)
+     * 신규 계좌를 등록한다.
+     * 필수 필드(명칭, 금융기관명, 카테고리 ID)가 누락되면 IllegalArgumentException을 던진다.
      */
     @Transactional
     public AccountResponse createAccount(AccountCreateRequest request) {
@@ -53,7 +57,7 @@ public class AccountService {
     }
 
     /**
-     * 계좌 정보 수정 (Update)
+     * 계좌 정보(명칭, 메모, 목적 카테고리)를 수정한다.
      */
     @Transactional
     public AccountResponse updateAccount(Long accountId, AccountUpdateRequest request) {
@@ -85,7 +89,7 @@ public class AccountService {
     }
 
     /**
-     * 계좌 단건 조회 (Read)
+     * 계좌 단건 정보를 조회한다.
      */
     public AccountResponse getAccountById(Long accountId) {
         Account account = findAccountById(accountId);
@@ -93,7 +97,10 @@ public class AccountService {
     }
 
     /**
-     * 계좌 목록 조회 (Read - 필터 옵션: 활성 여부 useYn, 카테고리 ID)
+     * 조건에 맞는 계좌 목록을 최신순으로 조회한다.
+     *
+     * @param useYn      null이면 활성 여부 무관 조회
+     * @param categoryId null이면 전체 카테고리 대상 조회
      */
     public List<AccountResponse> getAllAccounts(Boolean useYn, Long categoryId) {
         List<Account> accounts;
@@ -113,7 +120,7 @@ public class AccountService {
     }
 
     /**
-     * 계좌 삭제 (Delete)
+     * 계좌를 삭제한다.
      */
     @Transactional
     public void deleteAccount(Long accountId) {
@@ -125,7 +132,7 @@ public class AccountService {
     }
 
     /**
-     * 내부 비즈니스 로직용 계좌 단건 엔티티 조회
+     * 계좌 단건 엔티티를 조회한다. 존재하지 않으면 IllegalArgumentException을 던진다.
      */
     public Account findAccountById(Long accountId) {
         if (accountId == null) {

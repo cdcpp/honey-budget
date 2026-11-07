@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/** 계좌 거래 내역 상세 응답 DTO. */
 @Schema(description = "계좌 거래 내역 응답 DTO")
 @Getter
 @Builder

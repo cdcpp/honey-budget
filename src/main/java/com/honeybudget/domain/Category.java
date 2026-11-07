@@ -4,6 +4,9 @@ import com.honeybudget.domain.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * 계좌 목적 카테고리(중분류) 엔티티.
+ */
 @Entity
 @Table(
         name = "category",

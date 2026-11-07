@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * REST API 공통 응답 규격 클래스
+ * REST API 공통 응답 규격.
  *
  * @param <T> 응답 본문 데이터 타입
  */
@@ -28,44 +28,32 @@ public class ApiResponse<T> {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
 
-    /**
-     * 성공 응답 (데이터 포함)
-     */
+    /** 성공 응답을 생성한다. */
     public static <T> ApiResponse<T> success(T data) {
         return new ApiResponse<>(true, "요청이 성공적으로 처리되었습니다.", data);
     }
 
-    /**
-     * 성공 응답 (커스텀 메시지 및 데이터 포함)
-     */
+    /** 메시지와 데이터를 포함한 성공 응답을 생성한다. */
     public static <T> ApiResponse<T> success(String message, T data) {
         return new ApiResponse<>(true, message, data);
     }
 
-    /**
-     * 성공 응답 (데이터 없음)
-     */
+    /** 기본 메시지를 가진 빈 성공 응답을 생성한다. */
     public static <T> ApiResponse<T> ok() {
         return new ApiResponse<>(true, "요청이 성공적으로 처리되었습니다.", null);
     }
 
-    /**
-     * 성공 응답 (커스텀 메시지, 데이터 없음)
-     */
+    /** 메시지만 포함한 빈 성공 응답을 생성한다. */
     public static <T> ApiResponse<T> ok(String message) {
         return new ApiResponse<>(true, message, null);
     }
 
-    /**
-     * 실패 응답 (에러 메시지)
-     */
+    /** 에러 메시지를 포함한 실패 응답을 생성한다. */
     public static <T> ApiResponse<T> error(String message) {
         return new ApiResponse<>(false, message, null);
     }
 
-    /**
-     * 실패 응답 (에러 메시지 및 에러 데이터)
-     */
+    /** 에러 메시지와 상세 데이터를 포함한 실패 응답을 생성한다. */
     public static <T> ApiResponse<T> error(String message, T data) {
         return new ApiResponse<>(false, message, data);
     }

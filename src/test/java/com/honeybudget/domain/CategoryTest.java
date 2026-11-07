@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Category 엔티티 단위 테스트.
+ */
 class CategoryTest {
 
     @Test

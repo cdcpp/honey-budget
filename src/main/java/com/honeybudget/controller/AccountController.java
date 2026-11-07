@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 계좌 관리 API.
+ */
 @Tag(name = "Account (계좌)", description = "가계부 계좌 관리 API")
 @RestController
 @RequestMapping("/api/v1/accounts")
@@ -25,9 +28,7 @@ public class AccountController {
 
     private final AccountService accountService;
 
-    /**
-     * 계좌 등록 (Create)
-     */
+    /** 신규 계좌를 등록한다. */
     @Operation(summary = "신규 계좌 등록", description = "새로운 계좌를 등록합니다.")
     @SwaggerApiResponse(responseCode = "201", description = "계좌 등록 성공")
     @SwaggerApiResponse(responseCode = "400", description = "입력값 검증 실패 또는 존재하지 않는 카테고리 ID")
@@ -40,9 +41,7 @@ public class AccountController {
                 .body(ApiResponse.success("계좌가 성공적으로 등록되었습니다.", response));
     }
 
-    /**
-     * 계좌 정보 수정 (Update)
-     */
+    /** 계좌 정보(명칭, 메모, 카테고리)를 수정한다. */
     @Operation(summary = "계좌 정보 수정", description = "계좌 ID를 기반으로 계좌 명칭, 메모 및 소속 카테고리를 수정합니다.")
     @SwaggerApiResponse(responseCode = "200", description = "계좌 수정 성공")
     @SwaggerApiResponse(responseCode = "400", description = "입력값 검증 실패 또는 존재하지 않는 ID")
@@ -56,9 +55,7 @@ public class AccountController {
         return ResponseEntity.ok(ApiResponse.success("계좌 정보가 성공적으로 수정되었습니다.", response));
     }
 
-    /**
-     * 계좌 단건 조회 (Read)
-     */
+    /** 계좌 단건 정보를 조회한다. */
     @Operation(summary = "계좌 단건 상세 조회", description = "계좌 ID를 기반으로 특정 계좌의 상세 정보를 조회합니다.")
     @SwaggerApiResponse(responseCode = "200", description = "계좌 조회 성공")
     @SwaggerApiResponse(responseCode = "400", description = "존재하지 않는 계좌 ID")
@@ -71,9 +68,7 @@ public class AccountController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
-    /**
-     * 계좌 목록 조회 (Read)
-     */
+    /** 계좌 목록을 최신순으로 조회한다. 활성 여부 및 카테고리로 필터링할 수 있다. */
     @Operation(summary = "계좌 목록 조회", description = "등록된 계좌 목록을 최신순으로 조회합니다. useYn(활성 여부), categoryId(카테고리 ID) 파라미터로 필터링할 수 있습니다.")
     @SwaggerApiResponse(responseCode = "200", description = "계좌 목록 조회 성공")
     @GetMapping
@@ -87,9 +82,7 @@ public class AccountController {
         return ResponseEntity.ok(ApiResponse.success(responses));
     }
 
-    /**
-     * 계좌 삭제 (Delete)
-     */
+    /** 계좌를 삭제(비활성화)한다. */
     @Operation(summary = "계좌 삭제", description = "계좌 ID를 기반으로 해당 계좌를 삭제합니다.")
     @SwaggerApiResponse(responseCode = "200", description = "계좌 삭제 성공")
     @SwaggerApiResponse(responseCode = "400", description = "존재하지 않는 계좌 ID")

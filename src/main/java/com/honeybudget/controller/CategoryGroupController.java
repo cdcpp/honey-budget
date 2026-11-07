@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 카테고리 대분류 그룹 관리 API.
+ */
 @Tag(name = "CategoryGroup (대분류 그룹)", description = "카테고리 대분류 그룹 관리 API")
 @RestController
 @RequestMapping("/api/v1/category-groups")
@@ -25,9 +28,7 @@ public class CategoryGroupController {
 
     private final CategoryGroupService categoryGroupService;
 
-    /**
-     * 대분류 그룹 등록
-     */
+    /** 신규 대분류 그룹을 등록한다. */
     @Operation(summary = "신규 대분류 그룹 등록", description = "새로운 대분류 그룹(예: 수입, 지출)을 등록합니다. 대분류 코드는 중복될 수 없습니다.")
     @SwaggerApiResponse(responseCode = "201", description = "대분류 그룹 등록 성공")
     @SwaggerApiResponse(responseCode = "400", description = "입력값 검증 실패 또는 대분류 코드 중복")
@@ -40,9 +41,7 @@ public class CategoryGroupController {
                 .body(ApiResponse.success("대분류 그룹이 성공적으로 등록되었습니다.", response));
     }
 
-    /**
-     * 대분류 그룹 수정
-     */
+    /** 대분류 그룹 명칭을 수정한다. */
     @Operation(summary = "대분류 그룹 수정", description = "대분류 그룹 ID를 기반으로 대분류 그룹 명칭을 수정합니다.")
     @SwaggerApiResponse(responseCode = "200", description = "대분류 그룹 수정 성공")
     @SwaggerApiResponse(responseCode = "400", description = "입력값 검증 실패 또는 존재하지 않는 ID")
@@ -56,9 +55,7 @@ public class CategoryGroupController {
         return ResponseEntity.ok(ApiResponse.success("대분류 그룹이 성공적으로 수정되었습니다.", response));
     }
 
-    /**
-     * 다음 대분류 그룹 코드 조회 (100단위 증가) - 수정필요함
-     */
+    /** 다음 추천 대분류 그룹 코드를 조회한다. (최댓값 + 100 단위) */
     @Operation(summary = "다음 대분류 그룹 코드 조회", description = "기존에 등록된 대분류 그룹 코드 중 최댓값을 기준으로 100단위 증가된 다음 추천 코드(예: 100, 200, 300)를 조회합니다. 등록된 그룹이 없으면 기본값 100을 반환합니다.")
     @SwaggerApiResponse(responseCode = "200", description = "다음 대분류 그룹 코드 조회 성공")
     @GetMapping("/next-code")
@@ -67,9 +64,7 @@ public class CategoryGroupController {
         return ResponseEntity.ok(ApiResponse.success("다음 대분류 그룹 코드가 성공적으로 조회되었습니다.", response));
     }
 
-    /**
-     * 대분류 그룹 단건 조회
-     */
+    /** 대분류 그룹 단건 상세 정보를 조회한다. */
     @Operation(summary = "대분류 그룹 단건 상세 조회", description = "대분류 그룹 ID를 기반으로 특정 그룹의 상세 정보를 조회합니다.")
     @SwaggerApiResponse(responseCode = "200", description = "대분류 그룹 조회 성공")
     @SwaggerApiResponse(responseCode = "400", description = "존재하지 않는 대분류 그룹 ID")
@@ -82,9 +77,7 @@ public class CategoryGroupController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
-    /**
-     * 대분류 그룹 전체 목록 조회
-     */
+    /** 모든 대분류 그룹 목록을 코드순으로 조회한다. */
     @Operation(summary = "대분류 그룹 전체 목록 조회", description = "등록된 모든 대분류 그룹 목록을 코드순으로 조회합니다.")
     @SwaggerApiResponse(responseCode = "200", description = "대분류 그룹 목록 조회 성공")
     @GetMapping
@@ -93,9 +86,7 @@ public class CategoryGroupController {
         return ResponseEntity.ok(ApiResponse.success(responses));
     }
 
-    /**
-     * 대분류 그룹 삭제
-     */
+    /** 대분류 그룹을 삭제한다. 하위 중분류 카테고리가 존재하면 삭제할 수 없다. */
     @Operation(summary = "대분류 그룹 삭제", description = "대분류 그룹 ID를 기반으로 대분류 그룹을 삭제합니다. 하위 카테고리가 남아있는 경우 삭제할 수 없습니다.")
     @SwaggerApiResponse(responseCode = "200", description = "대분류 그룹 삭제 성공")
     @SwaggerApiResponse(responseCode = "400", description = "존재하지 않는 ID 또는 하위 카테고리 잔존")

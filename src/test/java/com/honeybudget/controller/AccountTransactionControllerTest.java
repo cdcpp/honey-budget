@@ -27,6 +27,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * 계좌 거래 내역 API 컨트롤러 통합 테스트.
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional

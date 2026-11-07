@@ -9,6 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * JPA 도메인 엔티티 매핑 및 연관관계 통합 테스트.
+ */
 @SpringBootTest
 @Transactional
 class DomainEntityMappingTest {

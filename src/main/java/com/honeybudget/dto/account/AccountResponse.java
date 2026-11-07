@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/** 계좌 상세 응답 DTO. */
 @Schema(description = "계좌 응답 DTO")
 @Getter
 @Builder

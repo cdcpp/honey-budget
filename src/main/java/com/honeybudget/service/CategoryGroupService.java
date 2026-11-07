@@ -12,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * 카테고리 대분류 그룹의 등록, 수정, 조회, 삭제를 처리하는 비즈니스 서비스.
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -21,7 +24,7 @@ public class CategoryGroupService {
     private final CategoryRepository categoryRepository;
 
     /**
-     * 대분류 그룹 등록
+     * 대분류 그룹을 등록한다. 코드가 중복되면 IllegalArgumentException을 던진다.
      */
     @Transactional
     public CategoryGroupResponse createCategoryGroup(CategoryGroupCreateRequest request) {
@@ -52,7 +55,7 @@ public class CategoryGroupService {
     }
 
     /**
-     * 대분류 그룹 수정 (명칭 수정)
+     * 대분류 그룹 명칭을 수정한다.
      */
     @Transactional
     public CategoryGroupResponse updateCategoryGroup(Long groupId, CategoryGroupUpdateRequest request) {
@@ -73,7 +76,7 @@ public class CategoryGroupService {
     }
 
     /**
-     * 대분류 그룹 단건 조회
+     * 대분류 그룹 단건 정보를 조회한다.
      */
     public CategoryGroupResponse getCategoryGroupById(Long groupId) {
         if (groupId == null) {
@@ -84,7 +87,7 @@ public class CategoryGroupService {
     }
 
     /**
-     * 대분류 그룹 전체 목록 조회
+     * 모든 대분류 그룹 목록을 코드 오름차순으로 조회한다.
      */
     public List<CategoryGroupResponse> getAllCategoryGroups() {
         return categoryGroupRepository.findAllByOrderByCategoryGroupCodeAsc().stream()
@@ -93,9 +96,7 @@ public class CategoryGroupService {
     }
 
     /**
-     * 다음 대분류 그룹 코드 조회 (100단위 증가)
-     * 등록된 그룹 코드 중 최댓값을 기준으로 100단위 증가된 다음 코드를 반환합니다.
-     * 등록된 그룹이 없거나 유효한 숫자 코드가 없는 경우 기본값 "100"을 반환합니다.
+     * 다음 추천 대분류 그룹 코드를 조회한다. (최댓값 + 100 단위, 없으면 기본값 100)
      */
     public CategoryGroupResponse getNextCategoryGroupCode() {
         int maxCode = categoryGroupRepository.findMaxCategoryGroupCode();
@@ -105,7 +106,7 @@ public class CategoryGroupService {
     }
 
     /**
-     * 대분류 그룹 삭제
+     * 대분류 그룹을 삭제한다. 하위 중분류가 남아 있으면 삭제할 수 없다.
      */
     @Transactional
     public void deleteCategoryGroup(Long groupId) {
@@ -123,7 +124,7 @@ public class CategoryGroupService {
     }
 
     /**
-     * 내부 비즈니스 로직용 대분류 그룹 엔티티 조회
+     * 대분류 그룹 엔티티를 조회한다. 존재하지 않으면 IllegalArgumentException을 던진다.
      */
     public CategoryGroup findGroupById(Long groupId) {
         if (groupId == null) {

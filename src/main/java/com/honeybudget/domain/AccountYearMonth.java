@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 /**
- * 계좌별 연간 월별 금액 관리 (연간 수입/저축/지출 명세표의 1~12월 컬럼)
- * 계좌 + 연도 당 1행
+ * 계좌별 연간 월별(1~12월) 금액 관리 엔티티. 계좌와 연도 조합당 1건만 존재한다.
  */
 @Entity
 @Table(
@@ -88,7 +87,7 @@ public class AccountYearMonth extends BaseTimeEntity {
     // ================= 비즈니스 메서드 ================= //
 
     /**
-     * 특정 월(1~12)의 금액 수정
+     * 특정 월(1~12)의 금액을 수정한다.
      */
     public void updateAmount(int month, BigDecimal amount) {
         if (amount == null) {
@@ -112,7 +111,7 @@ public class AccountYearMonth extends BaseTimeEntity {
     }
 
     /**
-     * 특정 월(1~12)의 금액 조회
+     * 특정 월(1~12)의 금액을 조회한다.
      */
     public BigDecimal getAmount(int month) {
         return switch (month) {

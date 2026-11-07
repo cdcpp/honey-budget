@@ -16,7 +16,7 @@
 
 ## 🧩 Database Modeling
 ```mermaid
-erDiagram 
+erDiagram i
     CATEGORY_GROUP ||--o{ CATEGORY : "대분류-중분류"
     CATEGORY ||--o{ ACCOUNT : "계좌 목적 분류"
     ACCOUNT ||--o{ ACCOUNTYEARMONTH : "연도별 월 금액 (계좌+연도당 1행)"

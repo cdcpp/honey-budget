@@ -7,6 +7,9 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * 공통 응답 규격(ApiResponse) 단위 테스트.
+ */
 class ApiResponseTest {
 
     @Test

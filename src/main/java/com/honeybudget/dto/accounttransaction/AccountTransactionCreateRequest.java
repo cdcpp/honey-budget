@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/** 계좌 거래 내역 등록 요청 DTO. */
 @Schema(description = "계좌 거래 내역 등록 요청 DTO")
 @Getter
 @Builder

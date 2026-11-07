@@ -4,6 +4,9 @@ import com.honeybudget.domain.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * 카테고리 그룹(대분류) 엔티티.
+ */
 @Entity
 @Table(
         name = "category_group",
@@ -34,6 +37,7 @@ public class CategoryGroup extends BaseTimeEntity {
         this.categoryGroupName = groupName;
     }
 
+    /** 대분류 명칭을 수정한다. */
     public void updateGroupName(String groupName) {
         this.categoryGroupName = groupName;
     }

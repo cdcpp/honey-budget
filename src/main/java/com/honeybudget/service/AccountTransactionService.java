@@ -14,6 +14,9 @@ import java.time.YearMonth;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
+/**
+ * 계좌 거래 내역 등록, 수정, 조회, 삭제를 처리하는 비즈니스 서비스.
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -23,7 +26,7 @@ public class AccountTransactionService {
     private final AccountService accountService;
 
     /**
-     * 거래 내역 등록 (Create)
+     * 계좌 거래 내역을 등록한다. 거래 일자로부터 연월(yearMonth)을 자동 계산한다.
      */
     @Transactional
     public AccountTransactionResponse create(AccountTransactionCreateRequest request) {
@@ -50,7 +53,7 @@ public class AccountTransactionService {
     }
 
     /**
-     * 거래 내역 수정 (Update)
+     * 거래 내역을 수정한다. 거래 일자가 바뀌면 귀속 연월도 자동 갱신된다.
      */
     @Transactional
     public AccountTransactionResponse update(Long transactionId, AccountTransactionUpdateRequest request) {
@@ -70,14 +73,14 @@ public class AccountTransactionService {
     }
 
     /**
-     * 거래 내역 단건 조회 (Read)
+     * 거래 내역 단건 정보를 조회한다.
      */
     public AccountTransactionResponse getById(Long transactionId) {
         return AccountTransactionResponse.from(findTransactionById(transactionId));
     }
 
     /**
-     * 거래 내역 목록 조회 (Read - 필터 옵션: 계좌 ID, 연월 YYYY-MM)
+     * 조건에 맞는 거래 내역 목록을 거래 일자 최신순으로 조회한다.
      */
     public List<AccountTransactionResponse> getAll(Long accountId, String yearMonth) {
         YearMonth ym = parseYearMonth(yearMonth);
@@ -99,7 +102,7 @@ public class AccountTransactionService {
     }
 
     /**
-     * 거래 내역 삭제 (Delete)
+     * 거래 내역을 삭제한다.
      */
     @Transactional
     public void delete(Long transactionId) {
@@ -108,7 +111,7 @@ public class AccountTransactionService {
     }
 
     /**
-     * 내부 비즈니스 로직용 거래 내역 단건 엔티티 조회
+     * 거래 내역 단건 엔티티를 조회한다. 존재하지 않으면 IllegalArgumentException을 던진다.
      */
     public AccountTransaction findTransactionById(Long transactionId) {
         if (transactionId == null) {

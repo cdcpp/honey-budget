@@ -5,6 +5,9 @@ import com.honeybudget.domain.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * 계좌 엔티티. 계좌 기본 정보와 소속 카테고리를 관리한다.
+ */
 @Entity
 @Table(name = "account")
 @Getter
@@ -61,7 +64,7 @@ public class Account extends BaseTimeEntity {
     // ================= 비즈니스 메서드 (도메인 로직) ================= //
 
     /**
-     * 계좌 기본 정보 수정
+     * 계좌 기본 정보(명칭, 메모)를 수정한다.
      */
     public void updateAccountInfo(String accountName, String memo) {
         this.accountName = accountName;
@@ -69,7 +72,7 @@ public class Account extends BaseTimeEntity {
     }
 
     /**
-     * 계좌 목적 카테고리 변경 (통장 용도 전환 시)
+     * 소속 카테고리를 변경한다.
      */
     public void changeCategory(Category newCategory) {
         if (newCategory == null) {
@@ -79,7 +82,7 @@ public class Account extends BaseTimeEntity {
     }
 
     /**
-     * 계좌 비활성화 / 해지 처리 (Soft Delete)
+     * 계좌를 비활성화한다. (Soft Delete)
      */
     public void deactivate() {
         this.useYn = false;

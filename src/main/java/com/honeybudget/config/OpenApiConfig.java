@@ -7,8 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * [OpenAPI / Swagger 전역 설정]
- * API 문서 메타데이터 및 전역 설정을 정의합니다.
+ * OpenAPI 3.0(Swagger) 문서 메타데이터 설정.
  */
 @Configuration
 public class OpenApiConfig {

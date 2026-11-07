@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/** 연간 종합 명세표(수입/저축/지출) 응답 DTO. */
 @Schema(description = "연간 수입/저축/지출 명세표 종합 응답 DTO")
 @Getter
 @Builder

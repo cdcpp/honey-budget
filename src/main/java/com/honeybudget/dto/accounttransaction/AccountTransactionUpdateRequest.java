@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/** 계좌 거래 내역 수정 요청 DTO. */
 @Schema(description = "계좌 거래 내역 수정 요청 DTO (null인 항목은 기존 값 유지, memo는 요청 값으로 덮어씀)")
 @Getter
 @Builder

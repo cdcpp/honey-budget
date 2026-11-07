@@ -86,9 +86,7 @@ public class AccountTransactionController {
         return ResponseEntity.ok(ApiResponse.success(accountTransactionService.getAll(accountId, yearMonth)));
     }
 
-    /**
-     * 거래 내역 삭제 (Delete)
-     */
+    /** 거래 내역을 삭제한다. */
     @Operation(summary = "거래 내역 삭제", description = "거래 내역 ID를 기반으로 해당 거래 내역을 삭제합니다.")
     @SwaggerApiResponse(responseCode = "200", description = "거래 내역 삭제 성공")
     @SwaggerApiResponse(responseCode = "400", description = "존재하지 않는 거래 내역 ID")

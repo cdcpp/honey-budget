@@ -8,6 +8,9 @@ import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * 계좌 거래 내역 저장소.
+ */
 public interface AccountTransactionRepository extends JpaRepository<AccountTransaction, Long> {
 
     @EntityGraph(attributePaths = {"account"})

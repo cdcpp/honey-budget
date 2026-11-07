@@ -12,8 +12,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 
 /**
- * 계좌별 일자 거래(지출) 내역 엔티티
- * 엑셀 시트(2025년 01월, 02월, 03월...)처럼 월별 시트 단위 관리 및 일자별 지출 내역 기록용
+ * 계좌 거래 내역 엔티티. 일자별 수입 및 지출 상세 내역을 관리한다.
  */
 @Entity
 @Table(
@@ -98,7 +97,7 @@ public class AccountTransaction extends BaseTimeEntity {
     // ================= 비즈니스 메서드 (도메인 로직) ================= //
 
     /**
-     * 거래 내역 정보 수정
+     * 거래 정보를 수정한다. 일자 변경 시 귀속 연월(yearMonth)도 자동 갱신된다.
      */
     public void updateTransaction(
             LocalDate transactionDate,
