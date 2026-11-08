@@ -1,0 +1,23 @@
+# Docker Compose 실행 예시 파일
+# 실제 실행 시: 이 파일을 복사하여 'docker-compose.yml'로 이름을 변경하고 비밀번호를 수정한 뒤 실행하세요.
+# 실행 명령어: docker compose up -d
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: honey-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: your_root_password_here  # 사용할 root 비밀번호로 변경하세요
+      MYSQL_DATABASE: honeybudget
+      TZ: Asia/Seoul
+    volumes:
+      - honey_mysql_data:/var/lib/mysql
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    restart: unless-stopped
+
+volumes:
+  honey_mysql_data:

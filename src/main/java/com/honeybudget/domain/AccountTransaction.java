@@ -18,7 +18,7 @@ import java.time.YearMonth;
 @Table(
         name = "account_transaction",
         indexes = {
-                @Index(name = "idx_account_trans_ym", columnList = "account_id, year_month"),
+                @Index(name = "idx_account_trans_ym", columnList = "account_id, transaction_year_month"),
                 @Index(name = "idx_account_trans_date", columnList = "account_id, transaction_date")
         }
 )
@@ -42,9 +42,10 @@ public class AccountTransaction extends BaseTimeEntity {
 
     /**
      * 월별 시트 기준 연월 (예: 2025-01, 2025-02)
+     * MySQL 예약어(YEAR_MONTH) 충돌 방지를 위해 컬럼명을 transaction_year_month로 매핑합니다.
      * YearMonthAttributeConverter를 통해 "YYYY-MM" 형식으로 저장/조회됩니다.
      */
-    @Column(name = "year_month", nullable = false, length = 7)
+    @Column(name = "transaction_year_month", nullable = false, length = 7)
     private YearMonth yearMonth;
 
     /** 거래 일자 (예: 2025-01-15) */

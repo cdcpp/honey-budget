@@ -8,6 +8,11 @@ application-*.yml
 !application.yml.example
 !application-sample.yml
 
+# 도커 및 환경 설정 파일
+docker-compose.yml
+docker-compose.override.yml
+!docker-compose.example.yml
+
 # 환경 변수 및 로컬 프로파일 설정
 .env
 .env.*

@@ -14,25 +14,14 @@ spring:
     name: honey-budget
 
   # ----------------------------------------------------------------------------
-  # 데이터베이스 연결 설정
-  # 환경 변수가 설정되어 있으면 해당 값을 사용하고, 없을 경우 안전한 로컬 H2 기본값을 사용합니다.
+  # 데이터베이스 연결 설정 (MySQL)
+  # 환경 변수가 설정되어 있으면 해당 값을 사용하고, 없을 경우 로컬 도커 MySQL 기본값을 사용합니다.
   # ----------------------------------------------------------------------------
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:h2:mem:honeybudget;MODE=MySQL;DB_CLOSE_DELAY=-1}
-    driver-class-name: ${SPRING_DATASOURCE_DRIVER:org.h2.Driver}
-    username: ${SPRING_DATASOURCE_USERNAME:sa}
-    password: ${SPRING_DATASOURCE_PASSWORD:}
-
-  # ----------------------------------------------------------------------------
-  # H2 웹 콘솔 설정 (개발 편의 도구)
-  # 보안을 위해 로컬(localhost)에서만 접속을 허용합니다. (web-allow-others: false)
-  # ----------------------------------------------------------------------------
-  h2:
-    console:
-      enabled: ${H2_CONSOLE_ENABLED:true}
-      path: /h2-console
-      settings:
-        web-allow-others: false
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/honeybudget?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER:com.mysql.cj.jdbc.Driver}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:root}
 
   # ----------------------------------------------------------------------------
   # JPA & Hibernate 설정
@@ -40,9 +29,9 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      # 로컬 개발 시: create-drop 또는 update 권장
+      # 로컬 개발 시: update 권장
       # 운영(Production) 배포 시: validate 또는 none 필수 적용
-      ddl-auto: ${JPA_DDL_AUTO:create-drop}
+      ddl-auto: ${JPA_DDL_AUTO:update}
     show-sql: ${JPA_SHOW_SQL:true}
     properties:
       hibernate:
