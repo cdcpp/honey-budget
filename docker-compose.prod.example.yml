@@ -1,0 +1,67 @@
+# ==============================================================================
+# GCP e2-micro (1GB RAM 맞춤 운영 환경) 배포용 docker-compose 예시 파일
+#
+# 💡 [1GB RAM 최적화 적용 내역]
+# - MySQL: 버퍼 풀 64MB 제한, 최대 연결수 30개 제한, 메모리 상한 300MB
+# - Spring Boot: JVM 최대 힙 256MB 제한 (-Xmx256m), 메모리 상한 400MB
+# - 전체 컨테이너가 600~700MB 선에서 구동되도록 제어하여 OOM(메모리 부족 멈춤) 방지
+#
+# 사용 방법:
+# 1. GCP 서버의 ~/honey-budget/ 디렉토리에 이 파일을 'docker-compose.yml'로 저장합니다.
+# 2. YOUR_DOCKERHUB_USERNAME(도커허브 ID)과 your_prod_db_password(DB 비밀번호)를 실제 값으로 변경합니다.
+# 3. docker compose up -d 명령어로 백그라운드 실행합니다.
+# ==============================================================================
+
+services:
+  # 1. MySQL 데이터베이스 컨테이너 (1GB RAM 맞춤 경량화)
+  mysql:
+    image: mysql:8.0
+    container_name: honey-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: your_prod_db_password  # 안전한 비밀번호로 변경하세요
+      MYSQL_DATABASE: honeybudget
+      TZ: Asia/Seoul
+    volumes:
+      - honey_mysql_prod_data:/var/lib/mysql
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --innodb-buffer-pool-size=64M
+      - --max-connections=30
+    deploy:
+      resources:
+        limits:
+          memory: 300M
+    networks:
+      - honey-network
+
+  # 2. 스프링 부트 애플리케이션 컨테이너 (JVM 힙 메모리 256MB 제한)
+  app:
+    image: YOUR_DOCKERHUB_USERNAME/honey-budget:latest  # 본인의 Docker Hub ID로 변경하세요
+    container_name: honey-app
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - "8080:8080"
+    environment:
+      JAVA_TOOL_OPTIONS: "-Xms128m -Xmx256m"
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/honeybudget?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: your_prod_db_password  # 위 mysql의 비밀번호와 일치시키세요
+      JPA_DDL_AUTO: update
+      TZ: Asia/Seoul
+    deploy:
+      resources:
+        limits:
+          memory: 400M
+    networks:
+      - honey-network
+
+networks:
+  honey-network:
+    driver: bridge
+
+volumes:
+  honey_mysql_prod_data:
