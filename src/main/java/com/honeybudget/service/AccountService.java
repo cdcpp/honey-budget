@@ -50,6 +50,8 @@ public class AccountService {
                 .institutionName(trimmedInstitution)
                 .category(category)
                 .memo(request.getMemo() != null ? request.getMemo().trim() : null)
+                .isDashboardVisible(request.getIsDashboardVisible())
+                .balance(request.getBalance())
                 .build();
 
         Account savedAccount = accountRepository.save(account);
@@ -57,7 +59,7 @@ public class AccountService {
     }
 
     /**
-     * 계좌 정보(명칭, 메모, 목적 카테고리)를 수정한다.
+     * 계좌 정보(명칭, 금융기관명, 메모, 목적 카테고리, 노출여부, 잔액)를 수정한다.
      */
     @Transactional
     public AccountResponse updateAccount(Long accountId, AccountUpdateRequest request) {
@@ -73,17 +75,20 @@ public class AccountService {
 
         Account account = findAccountById(accountId);
 
-        // 계좌 기본 정보 수정
-        account.updateAccountInfo(
-                request.getAccountName().trim(),
-                request.getMemo() != null ? request.getMemo().trim() : null
-        );
-
         // 목적 카테고리 변경 요청이 있는 경우
-        if (request.getCategoryId() != null && (account.getCategory() == null || !request.getCategoryId().equals(account.getCategory().getId()))) {
-            Category newCategory = categoryService.findCategoryById(request.getCategoryId());
-            account.changeCategory(newCategory);
+        Category category = account.getCategory();
+        if (request.getCategoryId() != null && (category == null || !request.getCategoryId().equals(category.getId()))) {
+            category = categoryService.findCategoryById(request.getCategoryId());
         }
+
+        account.update(
+                request.getAccountName().trim(),
+                request.getInstitutionName() != null ? request.getInstitutionName().trim() : account.getInstitutionName(),
+                category,
+                request.getMemo() != null ? request.getMemo().trim() : null,
+                request.getIsDashboardVisible(),
+                request.getBalance()
+        );
 
         return AccountResponse.from(account);
     }
@@ -115,6 +120,15 @@ public class AccountService {
         }
 
         return accounts.stream()
+                .map(AccountResponse::from)
+                .toList();
+    }
+
+    /**
+     * 대시보드 잔액관리 대상(isDashboardVisible = true) 계좌 목록을 ID 오름차순으로 조회한다.
+     */
+    public List<AccountResponse> getDashboardAccounts() {
+        return accountRepository.findAllByIsDashboardVisibleTrueOrderByIdAsc().stream()
                 .map(AccountResponse::from)
                 .toList();
     }

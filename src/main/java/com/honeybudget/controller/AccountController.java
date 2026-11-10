@@ -55,6 +55,15 @@ public class AccountController {
         return ResponseEntity.ok(ApiResponse.success("계좌 정보가 성공적으로 수정되었습니다.", response));
     }
 
+    /** 대시보드 잔액관리 대상 계좌 목록을 조회한다. */
+    @Operation(summary = "대시보드 노출 계좌 목록 조회", description = "대시보드 잔액관리 대상(isDashboardVisible = true) 계좌 목록을 ID 오름차순으로 조회합니다.")
+    @SwaggerApiResponse(responseCode = "200", description = "대시보드 계좌 목록 조회 성공")
+    @GetMapping("/dashboard")
+    public ResponseEntity<ApiResponse<List<AccountResponse>>> getDashboardAccounts() {
+        List<AccountResponse> responses = accountService.getDashboardAccounts();
+        return ResponseEntity.ok(ApiResponse.success(responses));
+    }
+
     /** 계좌 단건 정보를 조회한다. */
     @Operation(summary = "계좌 단건 상세 조회", description = "계좌 ID를 기반으로 특정 계좌의 상세 정보를 조회합니다.")
     @SwaggerApiResponse(responseCode = "200", description = "계좌 조회 성공")

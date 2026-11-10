@@ -30,5 +30,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     @EntityGraph(attributePaths = {"category", "category.group"})
     List<Account> findAllByCategoryIdAndUseYnOrderByIdDesc(Long categoryId, Boolean useYn);
 
+    @EntityGraph(attributePaths = {"category" , "category.group"})
+    List<Account> findAllByIsDashboardVisibleTrueOrderByIdAsc();
+
     boolean existsByCategoryId(Long categoryId);
 }

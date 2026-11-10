@@ -145,10 +145,9 @@ class AccountControllerTest {
                         .accountName("해지 통장")
                         .institutionName("신한은행")
                         .category(sampleCategory)
+                        .useYn(false)
                         .build()
         );
-        account2.deactivate();
-        accountRepository.save(account2);
 
         // 전체 조회 -> 2건
         mockMvc.perform(get("/api/v1/accounts"))
@@ -183,5 +182,36 @@ class AccountControllerTest {
         mockMvc.perform(get("/api/v1/accounts/" + account.getId()))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.success", is(false)));
+    }
+
+    @Test
+    @DisplayName("대시보드 노출 계좌 목록 조회: GET /api/v1/accounts/dashboard")
+    void testGetDashboardAccounts() throws Exception {
+        // given
+        accountRepository.save(
+                Account.builder()
+                        .accountName("비상금 통장")
+                        .institutionName("토스뱅크")
+                        .category(sampleCategory)
+                        .isDashboardVisible(true)
+                        .build()
+        );
+
+        accountRepository.save(
+                Account.builder()
+                        .accountName("숨김 통장")
+                        .institutionName("신한은행")
+                        .category(sampleCategory)
+                        .isDashboardVisible(false)
+                        .build()
+        );
+
+        // when & then: isDashboardVisible=true 인 계좌 1건만 반환
+        mockMvc.perform(get("/api/v1/accounts/dashboard"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)))
+                .andExpect(jsonPath("$.data", hasSize(1)))
+                .andExpect(jsonPath("$.data[0].accountName", is("비상금 통장")))
+                .andExpect(jsonPath("$.data[0].isDashboardVisible", is(true)));
     }
 }

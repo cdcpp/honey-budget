@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 /** 계좌 등록 요청 DTO. */
 @Schema(description = "계좌 등록 요청 DTO")
 @Getter
@@ -35,4 +37,10 @@ public class AccountCreateRequest {
     @Schema(description = "비고 및 메모", example = "매월 생활비 지출 통장")
     @Size(max = 200, message = "메모는 200자 이하이어야 합니다.")
     private String memo;
+
+    @Schema(description = "대시보드 잔액관리 계좌 노출 여부 (기본값: false)", example = "true")
+    private Boolean isDashboardVisible;
+
+    @Schema(description = "계좌 초기 잔액 (기본값: 0)", example = "500000")
+    private BigDecimal balance;
 }

@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /** 계좌 상세 응답 DTO. */
@@ -48,6 +49,12 @@ public class AccountResponse {
     @Schema(description = "비고 및 메모", example = "매월 생활비 지출 통장")
     private String memo;
 
+    @Schema(description = "대시보드 잔액관리 계좌 노출 여부", example = "true")
+    private Boolean isDashboardVisible;
+
+    @Schema(description = "계좌 현재 잔액", example = "500000")
+    private BigDecimal balance;
+
     @Schema(description = "계좌 등록 일시", example = "2026-09-27T10:00:00")
     private LocalDateTime createdAt;
 
@@ -86,6 +93,8 @@ public class AccountResponse {
                 .categoryGroupName(categoryGroupName)
                 .useYn(account.getUseYn())
                 .memo(account.getMemo())
+                .isDashboardVisible(account.getIsDashboardVisible())
+                .balance(account.getBalance())
                 .createdAt(account.getCreatedAt())
                 .updatedAt(account.getUpdatedAt())
                 .build();

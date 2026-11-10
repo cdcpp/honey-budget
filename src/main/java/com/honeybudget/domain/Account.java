@@ -5,6 +5,8 @@ import com.honeybudget.domain.common.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 /**
  * 계좌 엔티티. 계좌 기본 정보와 소속 카테고리를 관리한다.
  */
@@ -39,6 +41,14 @@ public class Account extends BaseTimeEntity {
     )
     private Category category;
 
+    /** 대쉬보드 잔액관리 계좌 출력여부(true/false)*/
+    @Column(name="is_dashboard_visible" , nullable = false ,  columnDefinition = "boolean default false")
+    private Boolean isDashboardVisible = false;
+
+    /** 계좌 현재 잔액 */
+    @Column(name = "balance", nullable = false, precision = 15, scale = 0, columnDefinition = "decimal(15,0) default 0")
+    private BigDecimal balance = BigDecimal.ZERO;
+
     /** 계좌 활성 여부 (통장 해지/삭제 시 false 처리 - Soft Delete) */
     @Column(name = "use_yn", nullable = false, length = 1)
     private Boolean useYn;
@@ -52,39 +62,47 @@ public class Account extends BaseTimeEntity {
             String accountName,
             String institutionName,
             Category category,
-            String memo
+            String memo,
+            Boolean isDashboardVisible,
+            BigDecimal balance,
+            Boolean useYn
     ) {
         this.accountName = accountName;
         this.institutionName = institutionName;
         this.category = category;
         this.memo = memo;
-        this.useYn = true; // 기본 활성화 상태
+        this.useYn = useYn != null ? useYn : true; // 기본 활성화 상태
+        this.isDashboardVisible = Boolean.TRUE.equals(isDashboardVisible);
+        this.balance = balance != null ? balance : BigDecimal.ZERO;
     }
 
     // ================= 비즈니스 메서드 (도메인 로직) ================= //
 
     /**
-     * 계좌 기본 정보(명칭, 메모)를 수정한다.
+     * 계좌 정보(명칭, 금융기관, 카테고리, 메모, 노출여부, 잔액)를 통합 수정한다.
      */
-    public void updateAccountInfo(String accountName, String memo) {
+    public void update(
+            String accountName,
+            String institutionName,
+            Category category,
+            String memo,
+            Boolean isDashboardVisible,
+            BigDecimal balance
+    ) {
         this.accountName = accountName;
-        this.memo = memo;
-    }
-
-    /**
-     * 소속 카테고리를 변경한다.
-     */
-    public void changeCategory(Category newCategory) {
-        if (newCategory == null) {
-            throw new IllegalArgumentException("변경할 목적 카테고리는 필수입니다.");
+        if (institutionName != null && !institutionName.isBlank()) {
+            this.institutionName = institutionName;
         }
-        this.category = newCategory;
+        if (category != null) {
+            this.category = category;
+        }
+        this.memo = memo;
+        if (isDashboardVisible != null) {
+            this.isDashboardVisible = isDashboardVisible;
+        }
+        if (balance != null) {
+            this.balance = balance;
+        }
     }
 
-    /**
-     * 계좌를 비활성화한다. (Soft Delete)
-     */
-    public void deactivate() {
-        this.useYn = false;
-    }
 }
