@@ -52,6 +52,9 @@ public class AccountResponse {
     @Schema(description = "대시보드 잔액관리 계좌 노출 여부", example = "true")
     private Boolean isDashboardVisible;
 
+    @Schema(description = "월별 소비내역 소비계좌 출력 여부", example = "true")
+    private Boolean isSpendingVisible;
+
     @Schema(description = "계좌 현재 잔액", example = "500000")
     private BigDecimal balance;
 
@@ -94,6 +97,7 @@ public class AccountResponse {
                 .useYn(account.getUseYn())
                 .memo(account.getMemo())
                 .isDashboardVisible(account.getIsDashboardVisible())
+                .isSpendingVisible(account.getIsSpendingVisible())
                 .balance(account.getBalance())
                 .createdAt(account.getCreatedAt())
                 .updatedAt(account.getUpdatedAt())

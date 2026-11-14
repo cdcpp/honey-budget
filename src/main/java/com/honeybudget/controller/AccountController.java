@@ -64,6 +64,15 @@ public class AccountController {
         return ResponseEntity.ok(ApiResponse.success(responses));
     }
 
+    /** 월별 소비내역 소비계좌 대상 목록을 조회한다. */
+    @Operation(summary = "월별 소비내역 소비계좌 목록 조회", description = "월별 소비내역 소비계좌 대상(isSpendingVisible = true) 계좌 목록을 ID 오름차순으로 조회합니다.")
+    @SwaggerApiResponse(responseCode = "200", description = "소비계좌 목록 조회 성공")
+    @GetMapping("/spending")
+    public ResponseEntity<ApiResponse<List<AccountResponse>>> getSpendingAccounts() {
+        List<AccountResponse> responses = accountService.getSpendingAccounts();
+        return ResponseEntity.ok(ApiResponse.success(responses));
+    }
+
     /** 계좌 단건 정보를 조회한다. */
     @Operation(summary = "계좌 단건 상세 조회", description = "계좌 ID를 기반으로 특정 계좌의 상세 정보를 조회합니다.")
     @SwaggerApiResponse(responseCode = "200", description = "계좌 조회 성공")

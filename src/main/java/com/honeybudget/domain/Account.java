@@ -45,6 +45,10 @@ public class Account extends BaseTimeEntity {
     @Column(name="is_dashboard_visible" , nullable = false ,  columnDefinition = "boolean default false")
     private Boolean isDashboardVisible = false;
 
+    /** 월별 소비내역 소비계좌 출력여부(true/false)*/
+    @Column(name="is_spending_visible" , nullable = false ,  columnDefinition = "boolean default false")
+    private Boolean isSpendingVisible = false;
+
     /** 계좌 현재 잔액 */
     @Column(name = "balance", nullable = false, precision = 15, scale = 0, columnDefinition = "decimal(15,0) default 0")
     private BigDecimal balance = BigDecimal.ZERO;
@@ -64,6 +68,7 @@ public class Account extends BaseTimeEntity {
             Category category,
             String memo,
             Boolean isDashboardVisible,
+            Boolean isSpendingVisible,
             BigDecimal balance,
             Boolean useYn
     ) {
@@ -73,6 +78,7 @@ public class Account extends BaseTimeEntity {
         this.memo = memo;
         this.useYn = useYn != null ? useYn : true; // 기본 활성화 상태
         this.isDashboardVisible = Boolean.TRUE.equals(isDashboardVisible);
+        this.isSpendingVisible = Boolean.TRUE.equals(isSpendingVisible);
         this.balance = balance != null ? balance : BigDecimal.ZERO;
     }
 
@@ -87,6 +93,7 @@ public class Account extends BaseTimeEntity {
             Category category,
             String memo,
             Boolean isDashboardVisible,
+            Boolean isSpendingVisible,
             BigDecimal balance
     ) {
         this.accountName = accountName;
@@ -99,6 +106,9 @@ public class Account extends BaseTimeEntity {
         this.memo = memo;
         if (isDashboardVisible != null) {
             this.isDashboardVisible = isDashboardVisible;
+        }
+        if (isSpendingVisible != null) {
+            this.isSpendingVisible = isSpendingVisible;
         }
         if (balance != null) {
             this.balance = balance;

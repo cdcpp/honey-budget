@@ -51,6 +51,7 @@ public class AccountService {
                 .category(category)
                 .memo(request.getMemo() != null ? request.getMemo().trim() : null)
                 .isDashboardVisible(request.getIsDashboardVisible())
+                .isSpendingVisible(request.getIsSpendingVisible())
                 .balance(request.getBalance())
                 .build();
 
@@ -87,6 +88,7 @@ public class AccountService {
                 category,
                 request.getMemo() != null ? request.getMemo().trim() : null,
                 request.getIsDashboardVisible(),
+                request.getIsSpendingVisible(),
                 request.getBalance()
         );
 
@@ -129,6 +131,15 @@ public class AccountService {
      */
     public List<AccountResponse> getDashboardAccounts() {
         return accountRepository.findAllByIsDashboardVisibleTrueOrderByIdAsc().stream()
+                .map(AccountResponse::from)
+                .toList();
+    }
+
+    /**
+     * 월별 소비내역 소비계좌 대상(isSpendingVisible = true) 계좌 목록을 ID 오름차순으로 조회한다.
+     */
+    public List<AccountResponse> getSpendingAccounts() {
+        return accountRepository.findAllByIsSpendingVisibleTrueOrderByIdAsc().stream()
                 .map(AccountResponse::from)
                 .toList();
     }

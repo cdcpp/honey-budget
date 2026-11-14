@@ -75,6 +75,7 @@ class AccountServiceTest {
                     .institutionName("토스뱅크")
                     .categoryId(1L)
                     .memo("생활비 전용")
+                    .isSpendingVisible(true)
                     .build();
 
             Account account = Account.builder()
@@ -82,6 +83,7 @@ class AccountServiceTest {
                     .institutionName("토스뱅크")
                     .category(sampleCategory)
                     .memo("생활비 전용")
+                    .isSpendingVisible(true)
                     .build();
 
             given(categoryService.findCategoryById(1L)).willReturn(sampleCategory);
@@ -93,6 +95,7 @@ class AccountServiceTest {
             assertThat(response.getAccountName()).isEqualTo("토스 생활비 통장");
             assertThat(response.getInstitutionName()).isEqualTo("토스뱅크");
             assertThat(response.getCategoryName()).isEqualTo("생활비 통장");
+            assertThat(response.getIsSpendingVisible()).isTrue();
             assertThat(response.getUseYn()).isTrue();
             verify(accountRepository).save(any(Account.class));
         }
@@ -130,6 +133,7 @@ class AccountServiceTest {
                     .accountName("토스 비상금 통장")
                     .categoryId(2L)
                     .memo("비상금으로 전환")
+                    .isSpendingVisible(true)
                     .build();
 
             given(accountRepository.findById(1L)).willReturn(Optional.of(account));
@@ -139,6 +143,7 @@ class AccountServiceTest {
 
             assertThat(response.getAccountName()).isEqualTo("토스 비상금 통장");
             assertThat(response.getMemo()).isEqualTo("비상금으로 전환");
+            assertThat(response.getIsSpendingVisible()).isTrue();
             assertThat(account.getCategory()).isEqualTo(anotherCategory);
         }
 
@@ -201,6 +206,25 @@ class AccountServiceTest {
             List<AccountResponse> responses = accountService.getAllAccounts(true, null);
 
             assertThat(responses).hasSize(1);
+        }
+
+        @Test
+        @DisplayName("월별 소비내역 소비계좌(isSpendingVisible=true) 조회")
+        void getSpendingAccountsSuccess() {
+            Account acc1 = Account.builder()
+                    .accountName("생활비 통장")
+                    .institutionName("토스뱅크")
+                    .category(sampleCategory)
+                    .isSpendingVisible(true)
+                    .build();
+
+            given(accountRepository.findAllByIsSpendingVisibleTrueOrderByIdAsc()).willReturn(List.of(acc1));
+
+            List<AccountResponse> responses = accountService.getSpendingAccounts();
+
+            assertThat(responses).hasSize(1);
+            assertThat(responses.get(0).getAccountName()).isEqualTo("생활비 통장");
+            assertThat(responses.get(0).getIsSpendingVisible()).isTrue();
         }
     }
 

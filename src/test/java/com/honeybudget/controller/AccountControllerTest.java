@@ -67,7 +67,8 @@ class AccountControllerTest {
                     "accountName": "토스 생활비 통장",
                     "institutionName": "토스뱅크",
                     "categoryId": %d,
-                    "memo": "생활비 전용"
+                    "memo": "생활비 전용",
+                    "isSpendingVisible": true
                 }
                 """, sampleCategory.getId());
 
@@ -79,6 +80,7 @@ class AccountControllerTest {
                 .andExpect(jsonPath("$.data.accountName", is("토스 생활비 통장")))
                 .andExpect(jsonPath("$.data.institutionName", is("토스뱅크")))
                 .andExpect(jsonPath("$.data.categoryCode", is("201")))
+                .andExpect(jsonPath("$.data.isSpendingVisible", is(true)))
                 .andExpect(jsonPath("$.data.useYn", is(true)))
                 .andExpect(jsonPath("$.data.id").isNumber());
     }
@@ -98,7 +100,8 @@ class AccountControllerTest {
         String updateJson = """
                 {
                     "accountName": "토스 비상금 통장",
-                    "memo": "비상금 통장으로 변경"
+                    "memo": "비상금 통장으로 변경",
+                    "isSpendingVisible": true
                 }
                 """;
 
@@ -108,7 +111,8 @@ class AccountControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success", is(true)))
                 .andExpect(jsonPath("$.data.accountName", is("토스 비상금 통장")))
-                .andExpect(jsonPath("$.data.memo", is("비상금 통장으로 변경")));
+                .andExpect(jsonPath("$.data.memo", is("비상금 통장으로 변경")))
+                .andExpect(jsonPath("$.data.isSpendingVisible", is(true)));
     }
 
     @Test
@@ -213,5 +217,36 @@ class AccountControllerTest {
                 .andExpect(jsonPath("$.data", hasSize(1)))
                 .andExpect(jsonPath("$.data[0].accountName", is("비상금 통장")))
                 .andExpect(jsonPath("$.data[0].isDashboardVisible", is(true)));
+    }
+
+    @Test
+    @DisplayName("월별 소비내역 소비계좌 목록 조회: GET /api/v1/accounts/spending")
+    void testGetSpendingAccounts() throws Exception {
+        // given
+        accountRepository.save(
+                Account.builder()
+                        .accountName("생활비 통장")
+                        .institutionName("토스뱅크")
+                        .category(sampleCategory)
+                        .isSpendingVisible(true)
+                        .build()
+        );
+
+        accountRepository.save(
+                Account.builder()
+                        .accountName("저축 통장")
+                        .institutionName("신한은행")
+                        .category(sampleCategory)
+                        .isSpendingVisible(false)
+                        .build()
+        );
+
+        // when & then: isSpendingVisible=true 인 계좌 1건만 반환
+        mockMvc.perform(get("/api/v1/accounts/spending"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success", is(true)))
+                .andExpect(jsonPath("$.data", hasSize(1)))
+                .andExpect(jsonPath("$.data[0].accountName", is("생활비 통장")))
+                .andExpect(jsonPath("$.data[0].isSpendingVisible", is(true)));
     }
 }

@@ -41,6 +41,9 @@ public class AccountCreateRequest {
     @Schema(description = "대시보드 잔액관리 계좌 노출 여부 (기본값: false)", example = "true")
     private Boolean isDashboardVisible;
 
+    @Schema(description = "월별 소비내역 소비계좌 출력 여부 (기본값: false)", example = "true")
+    private Boolean isSpendingVisible;
+
     @Schema(description = "계좌 초기 잔액 (기본값: 0)", example = "500000")
     private BigDecimal balance;
 }

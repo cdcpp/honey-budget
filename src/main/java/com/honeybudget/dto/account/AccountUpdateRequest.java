@@ -38,6 +38,9 @@ public class AccountUpdateRequest {
     @Schema(description = "대시보드 잔액관리 계좌 노출 여부", example = "true")
     private Boolean isDashboardVisible;
 
+    @Schema(description = "월별 소비내역 소비계좌 출력 여부", example = "true")
+    private Boolean isSpendingVisible;
+
     @Schema(description = "수정할 계좌 잔액", example = "1000000")
     private BigDecimal balance;
 }
